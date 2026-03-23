@@ -1,0 +1,3314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>seven 11 Dashboard - Complaints Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #4299e1;
+            --accent-color: #e53e3e;
+            --light-color: #f7fafc;
+            --dark-color: #2d3748;
+            --success-color: #38a169;
+            --warning-color: #dd6b20;
+            --danger-color: #e53e3e;
+            --user-color: #3182ce;
+            --admin-color: #805ad5;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --border-radius-lg: 16px;
+            --border-radius-md: 12px;
+            --border-radius-sm: 8px;
+            --sidebar-width: 280px;
+        }
+
+        body.dark-theme {
+            --primary-color: #2d3748;
+            --secondary-color: #3182ce;
+            --accent-color: #fc8181;
+            --light-color: #2d3748;
+            --dark-color: #f7fafc;
+            --success-color: #48bb78;
+            --warning-color: #ed8936;
+            --danger-color: #f56565;
+            --user-color: #63b3ed;
+            --admin-color: #9f7aea;
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f7fafc 0%, #e2e8f0 100%);
+            color: #4a5568;
+            transition: var(--transition);
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        /* ===== ENHANCED ANIMATIONS ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        /* ===== LOADING SCREEN ===== */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--admin-color) 0%, #6b46c1 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: rotate 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        /* ===== FLOATING LANGUAGE SELECTOR ===== */
+        .floating-language {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .language-toggle-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--admin-color) 0%, #6b46c1 100%);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: var(--transition);
+            animation: pulse 2s infinite;
+        }
+
+        .language-toggle-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .language-dropdown {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: white;
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+            display: none;
+            overflow: hidden;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        body.dark-theme .language-dropdown {
+            background: var(--light-color);
+        }
+
+        .language-dropdown.active {
+            display: block;
+        }
+
+        .language-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        body.dark-theme .language-option {
+            color: white;
+            border-bottom-color: #4a5568;
+        }
+
+        .language-option:last-child {
+            border-bottom: none;
+        }
+
+        .language-option:hover {
+            background: #f7fafc;
+        }
+
+        body.dark-theme .language-option:hover {
+            background: #4a5568;
+        }
+
+        .language-option.active {
+            background: linear-gradient(90deg, rgba(128, 90, 213, 0.1) 0%, transparent 100%);
+            color: var(--admin-color);
+            font-weight: 500;
+        }
+
+        .language-flag {
+            font-size: 20px;
+        }
+
+        .language-name {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* ===== TOP NAVIGATION ===== */
+        .navbar {
+            background: linear-gradient(135deg, var(--admin-color) 0%, #6b46c1 100%);
+            color: white;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 64px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+
+        .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .navbar-title {
+            font-family: 'Poppins', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+        }
+
+        .notification-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent-color);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+        }
+
+        /* Navbar logo (positioned to the right of the menu button) */
+        .navbar-logo {
+            position: absolute;
+            left: 72px; /* move right of the menu button to avoid overlap */
+            top: calc(var(--safe-area-inset-top) - 2px); /* match user.html nudged up 4px */
+            width: 96px; /* larger logo */
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            z-index: 1010;
+            pointer-events: none; /* allow clicks on the menu button */
+        }
+
+        @media (max-width: 768px) {
+            .navbar-title { margin-left: 92px; }
+            .navbar-logo { left: 60px; width: 80px; }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-logo {
+                width: 64px;
+                left: 60px;
+                top: calc(var(--safe-area-inset-top) - 4px);
+            }
+            .navbar-title { margin-left: 84px; }
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .user-profile:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            color: var(--admin-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .profile-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* ===== ENHANCED SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            top: 64px;
+            left: -300px;
+            width: var(--sidebar-width);
+            height: calc(100vh - 64px);
+            background: white;
+            transition: var(--transition);
+            z-index: 999;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            animation: slideInRight 0.3s ease;
+        }
+
+        body.dark-theme .sidebar {
+            background: var(--light-color);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            z-index: 998;
+            animation: fadeInUp 0.2s ease;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--admin-color) 0%, #6b46c1 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(128, 90, 213, 0.3);
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
+
+        body.dark-theme .user-name {
+            color: white;
+        }
+
+        .user-role {
+            font-size: 13px;
+            color: #718096;
+            padding: 4px 12px;
+            background: #edf2f7;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        body.dark-theme .user-role {
+            background: #4a5568;
+            color: #cbd5e0;
+        }
+
+        .sidebar-menu {
+            padding: 16px 0;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 24px;
+            color: #4a5568;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+
+        body.dark-theme .menu-item {
+            color: #cbd5e0;
+        }
+
+        .menu-item:hover {
+            background: #f7fafc;
+            border-left-color: var(--admin-color);
+        }
+
+        body.dark-theme .menu-item:hover {
+            background: #4a5568;
+        }
+
+        .menu-item.active {
+            background: linear-gradient(90deg, rgba(128, 90, 213, 0.1) 0%, transparent 100%);
+            border-left-color: var(--admin-color);
+            color: var(--admin-color);
+            font-weight: 500;
+        }
+
+        .menu-item i {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .menu-item span {
+            flex: 1;
+        }
+
+        .menu-badge {
+            background: var(--accent-color);
+            color: white;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            padding: 80px 32px 32px;
+            min-height: 100vh;
+            transition: var(--transition);
+            animation: fadeInUp 0.4s ease;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .main-content.loaded {
+            opacity: 1;
+        }
+
+        .page {
+            display: none;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        body.dark-theme .page-title {
+            color: white;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: #718096;
+            margin-bottom: 32px;
+        }
+
+        /* ===== DASHBOARD CARDS ===== */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            animation: scaleIn 0.4s ease;
+            animation-fill-mode: both;
+            animation-delay: calc(var(--card-index, 0) * 0.1s);
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark-theme .dashboard-card {
+            background: var(--light-color);
+            border-color: #4a5568;
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--admin-color), var(--secondary-color));
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .card-pending .card-icon {
+            background: linear-gradient(135deg, var(--warning-color), #ed8936);
+        }
+
+        .card-inprogress .card-icon {
+            background: linear-gradient(135deg, var(--secondary-color), #3182ce);
+        }
+
+        .card-resolved .card-icon {
+            background: linear-gradient(135deg, var(--success-color), #48bb78);
+        }
+
+        .card-total .card-icon {
+            background: linear-gradient(135deg, var(--admin-color), #6b46c1);
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        body.dark-theme .card-value {
+            color: white;
+        }
+
+        .card-change {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .card-change.positive {
+            color: var(--success-color);
+        }
+
+        .card-change.negative {
+            color: var(--danger-color);
+        }
+
+        /* ===== COMPLAINT LIST ===== */
+        .complaint-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .complaint-item {
+            background: white;
+            border-radius: var(--border-radius-md);
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            animation: fadeInUp 0.4s ease;
+            animation-fill-mode: both;
+            animation-delay: calc(var(--item-index, 0) * 0.05s);
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+        }
+
+        body.dark-theme .complaint-item {
+            background: var(--light-color);
+            border-color: #4a5568;
+        }
+
+        .complaint-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-color: var(--admin-color);
+        }
+
+        .complaint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .complaint-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            line-height: 1.4;
+            flex: 1;
+        }
+
+        body.dark-theme .complaint-title {
+            color: white;
+        }
+
+        .complaint-priority {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .priority-low {
+            background: rgba(72, 187, 120, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(72, 187, 120, 0.2);
+        }
+
+        .priority-medium {
+            background: rgba(237, 137, 54, 0.1);
+            color: var(--warning-color);
+            border: 1px solid rgba(237, 137, 54, 0.2);
+        }
+
+        .priority-high {
+            background: rgba(245, 101, 101, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(245, 101, 101, 0.2);
+        }
+
+        .complaint-info {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #718096;
+
+        .complaint-thumb-wrapper {
+            width: 72px;
+            height: 72px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.04);
+        }
+
+        .complaint-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        }
+
+        .complaint-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .complaint-info-item i {
+            font-size: 16px;
+        }
+
+        .complaint-desc {
+            margin-bottom: 16px;
+            color: #4a5568;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        body.dark-theme .complaint-desc {
+            color: #cbd5e0;
+        }
+
+        .complaint-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        body.dark-theme .complaint-footer {
+            border-top-color: #4a5568;
+        }
+
+        .complaint-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending {
+            background: rgba(237, 137, 54, 0.1);
+            color: var(--warning-color);
+            border: 1px solid rgba(237, 137, 54, 0.2);
+        }
+
+        .status-inprogress {
+            background: rgba(66, 153, 225, 0.1);
+            color: var(--secondary-color);
+            border: 1px solid rgba(66, 153, 225, 0.2);
+        }
+
+        .status-resolved {
+            background: rgba(72, 187, 120, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(72, 187, 120, 0.2);
+        }
+
+        .complaint-date {
+            font-size: 13px;
+            color: #718096;
+        }
+
+        /* ===== ENHANCED ACTION BUTTONS ===== */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .action-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .work-btn {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .work-btn:hover {
+            background: #3182ce;
+        }
+
+        .resolve-btn {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .resolve-btn:hover {
+            background: #38a169;
+        }
+
+        .view-btn {
+            background: #718096;
+            color: white;
+        }
+
+        .view-btn:hover {
+            background: #4a5568;
+        }
+
+        /* ===== PROFESSIONAL MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            animation: scaleIn 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.dark-theme .modal-content {
+            background: var(--light-color);
+        }
+
+        .modal-header {
+            padding: 24px;
+            background: linear-gradient(135deg, var(--admin-color) 0%, #6b46c1 100%);
+            color: white;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .modal-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        body.dark-theme .detail-value {
+            color: white;
+        }
+
+        .detail-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .description-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: var(--border-radius-md);
+            margin-top: 20px;
+        }
+
+        body.dark-theme .description-section {
+            background: #4a5568;
+        }
+
+        .description-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+        }
+
+        body.dark-theme .description-label {
+            color: white;
+        }
+
+        .description-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #4a5568;
+            white-space: pre-wrap;
+        }
+
+        body.dark-theme .description-content {
+            color: #cbd5e0;
+        }
+
+        .modal-actions {
+            padding: 24px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        body.dark-theme .modal-actions {
+            border-top-color: #4a5568;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-btn-cancel {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        body.dark-theme .modal-btn-cancel {
+            background: #4a5568;
+            color: #cbd5e0;
+        }
+
+        .modal-btn-confirm {
+            background: var(--admin-color);
+            color: white;
+        }
+
+        .modal-btn-confirm:hover {
+            background: #6b46c1;
+        }
+
+        /* ===== TOAST NOTIFICATION ===== */
+        .toast {
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            background: white;
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            padding: 16px;
+            max-width: 320px;
+            z-index: 1200;
+            transform: translateX(400px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid var(--admin-color);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        body.dark-theme .toast {
+            background: var(--light-color);
+        }
+
+        .toast.active {
+            transform: translateX(0);
+        }
+
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--admin-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
+
+        body.dark-theme .toast-title {
+            color: white;
+        }
+
+        .toast-message {
+            font-size: 13px;
+            color: #718096;
+            line-height: 1.4;
+        }
+
+        /* ===== SETTINGS PAGE ===== */
+        .settings-section {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        body.dark-theme .settings-section {
+            background: var(--light-color);
+        }
+
+        .settings-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        body.dark-theme .settings-title {
+            color: white;
+        }
+
+        .theme-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .theme-btn {
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius-md);
+            background: white;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        body.dark-theme .theme-btn {
+            background: var(--light-color);
+            border-color: #4a5568;
+            color: white;
+        }
+
+        .theme-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-btn.active {
+            border-color: var(--admin-color);
+            background: linear-gradient(135deg, rgba(128, 90, 213, 0.05) 0%, transparent 100%);
+        }
+
+        .theme-btn i {
+            font-size: 32px;
+        }
+
+        .settings-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: #f7fafc;
+            border-radius: var(--border-radius-md);
+        }
+
+        body.dark-theme .setting-item {
+            background: #4a5568;
+        }
+
+        .setting-label {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        body.dark-theme .setting-label {
+            color: white;
+        }
+
+        /* ===== FILTERS ===== */
+        .filter-section {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select, .search-bar {
+            padding: 10px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius-sm);
+            background: white;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        body.dark-theme .filter-select,
+        body.dark-theme .search-bar {
+            background: var(--light-color);
+            border-color: #4a5568;
+            color: white;
+        }
+
+        .filter-select:focus,
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--admin-color);
+            box-shadow: 0 0 0 3px rgba(128, 90, 213, 0.1);
+        }
+
+        .search-bar {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: #718096;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #cbd5e0;
+            animation: pulse 2s infinite;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        body.dark-theme .empty-state h3 {
+            color: white;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 80px 16px 16px;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                width: 95%;
+            }
+            
+            .filter-section {
+                flex-direction: column;
+            }
+            
+            .search-bar {
+                min-width: 100%;
+            }
+            
+            .language-dropdown {
+                min-width: 180px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-title {
+                font-size: 16px;
+            }
+            
+            .page-title {
+                font-size: 24px;
+            }
+            
+            .complaint-info {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .modal-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .floating-language {
+                bottom: 10px;
+                right: 10px;
+            }
+            
+            .language-toggle-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+
+        /* ===== UTILITY CLASSES ===== */
+        .loading {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .role-indicator {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(128, 90, 213, 0.1);
+            color: var(--admin-color);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* ===== SWITCH STYLES ===== */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e0;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: var(--admin-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .slider.round {
+            border-radius: 28px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+    </style>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading seven 11 Dashboard...</div>
+    </div>
+
+    <!-- Floating Language Selector -->
+    <div class="floating-language">
+        <div class="language-dropdown" id="languageDropdown">
+            <div class="language-option active" data-lang="en">
+                <span class="language-flag">🇺🇸</span>
+                <span class="language-name">English</span>
+                <i class="fas fa-check"></i>
+            </div>
+            <div class="language-option" data-lang="hi">
+                <span class="language-flag">🇮🇳</span>
+                <span class="language-name">हिंदी (Hindi)</span>
+            </div>
+            <div class="language-option" data-lang="mr">
+                <span class="language-flag">🇮🇳</span>
+                <span class="language-name">मराठी (Marathi)</span>
+            </div>
+        </div>
+        <button class="language-toggle-btn" id="languageToggle">
+            <i class="fas fa-globe"></i>
+        </button>
+    </div>
+
+    <!-- Top Navigation -->
+    <nav class="navbar">
+        <button class="menu-btn" id="menuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="navbar-title" id="navbarTitle">SEVEN 11 DASHBOARD</div>
+        <div class="navbar-actions">
+            <button class="notification-btn" id="notificationBtn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge" id="notificationBadge">0</span>
+            </button>
+            <div class="user-profile">
+                <div class="profile-avatar" id="profileAvatar">A</div>
+                <div class="profile-name" id="profileName">Admin</div>
+            </div>
+        </div>
+        <img src="logo.png" alt="Logo" class="navbar-logo">
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">A</div>
+                <div class="user-details">
+                    <div class="user-name" id="userName">System Administrator</div>
+                    <div class="user-role" id="userRole">Loading...</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-item active" data-page="dashboard">
+                <i class="fas fa-tachometer-alt"></i>
+                <span id="menuDashboard">Dashboard</span>
+            </div>
+            <div class="menu-item" data-page="pending">
+                <i class="fas fa-clock"></i>
+                <span id="menuPending">Pending Complaints</span>
+                <span class="menu-badge" id="pendingBadge">0</span>
+            </div>
+            <div class="menu-item" data-page="inProgress">
+                <i class="fas fa-tasks"></i>
+                <span id="menuInProgress">In Progress</span>
+            </div>
+            <div class="menu-item" data-page="resolved">
+                <i class="fas fa-check-circle"></i>
+                <span id="menuResolved">Resolved</span>
+            </div>
+            <div class="menu-item" data-page="settings">
+                <i class="fas fa-cog"></i>
+                <span id="menuSettings">Settings</span>
+            </div>
+            <div class="menu-item" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span id="menuLogout">Logout</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Dashboard Page -->
+        <div class="page active" id="dashboardPage">
+            <h1 class="page-title" id="dashboardTitle">Dashboard Overview</h1>
+            <p class="page-subtitle" id="dashboardSubtitle">Monitor and manage all complaints from one centralized dashboard</p>
+            
+            <div class="dashboard-cards">
+                <div class="dashboard-card card-pending" style="--card-index: 0;">
+                    <div class="card-header">
+                        <div class="card-title" id="cardPendingTitle">Pending Complaints</div>
+                        <div class="card-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="card-value" id="pendingCount">0</div>
+                    <div class="card-change" id="pendingChange">+0 today</div>
+                </div>
+                
+                <div class="dashboard-card card-inprogress" style="--card-index: 1;">
+                    <div class="card-header">
+                        <div class="card-title" id="cardInProgressTitle">In Progress</div>
+                        <div class="card-icon">
+                            <i class="fas fa-spinner"></i>
+                        </div>
+                    </div>
+                    <div class="card-value" id="inProgressCount">0</div>
+                    <div class="card-change" id="inProgressChange">+0 active</div>
+                </div>
+                
+                <div class="dashboard-card card-resolved" style="--card-index: 2;">
+                    <div class="card-header">
+                        <div class="card-title" id="cardResolvedTitle">Resolved Today</div>
+                        <div class="card-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="card-value" id="resolvedCount">0</div>
+                    <div class="card-change positive" id="resolvedChange">+0 resolved</div>
+                </div>
+                
+                <div class="dashboard-card card-total" style="--card-index: 3;">
+                    <div class="card-header">
+                        <div class="card-title" id="cardUsersTitle">Active Users</div>
+                        <div class="card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="card-value" id="usersCount">0</div>
+                    <div class="card-change" id="cardUsersSubtitle">Total registered</div>
+                </div>
+            </div>
+            
+            <h2 class="page-title" id="recentActivityTitle">Recent Activity</h2>
+            <div class="complaint-list" id="dashboardComplaints">
+                <!-- Complaints will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Pending Complaints Page -->
+        <div class="page" id="pendingPage">
+            <h1 class="page-title" id="pendingTitle">Pending Complaints</h1>
+            <p class="page-subtitle" id="pendingSubtitle">Review and take action on pending complaints</p>
+            
+            <div class="filter-section">
+                <select class="filter-select" id="pendingFilter">
+                    <option value="all" id="filterAll">All Priorities</option>
+                    <option value="low" id="filterLow">Low Priority</option>
+                    <option value="medium" id="filterMedium">Medium Priority</option>
+                    <option value="high" id="filterHigh">High Priority</option>
+                </select>
+                <input type="text" class="search-bar" id="pendingSearch" placeholder="Search complaints...">
+            </div>
+            
+            <div class="complaint-list" id="pendingComplaints">
+                <!-- Pending complaints will be loaded here -->
+            </div>
+        </div>
+
+        <!-- In Progress Page -->
+        <div class="page" id="inProgressPage">
+            <h1 class="page-title" id="inProgressTitle">Complaints In Progress</h1>
+            <p class="page-subtitle" id="inProgressSubtitle">Monitor ongoing complaint resolutions</p>
+            
+            <div class="filter-section">
+                <select class="filter-select" id="inProgressFilter">
+                    <option value="all">All Priorities</option>
+                    <option value="low">Low Priority</option>
+                    <option value="medium">Medium Priority</option>
+                    <option value="high">High Priority</option>
+                </select>
+                <input type="text" class="search-bar" id="inProgressSearch" placeholder="Search complaints...">
+            </div>
+            
+            <div class="complaint-list" id="inProgressComplaints">
+                <!-- In-progress complaints will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Resolved Page -->
+        <div class="page" id="resolvedPage">
+            <h1 class="page-title" id="resolvedTitle">Resolved Complaints</h1>
+            <p class="page-subtitle" id="resolvedSubtitle">View history of resolved complaints</p>
+            
+            <div class="filter-section">
+                <select class="filter-select" id="resolvedFilter">
+                    <option value="all">All Priorities</option>
+                    <option value="low">Low Priority</option>
+                    <option value="medium">Medium Priority</option>
+                    <option value="high">High Priority</option>
+                </select>
+                <input type="text" class="search-bar" id="resolvedSearch" placeholder="Search complaints...">
+            </div>
+            
+            <div class="complaint-list" id="resolvedComplaints">
+                <!-- Resolved complaints will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div class="page" id="settingsPage">
+            <h1 class="page-title" id="settingsTitle">Settings</h1>
+            <p class="page-subtitle" id="settingsSubtitle">Customize your dashboard experience</p>
+            
+            <div class="settings-section">
+                <h2 class="settings-title" id="appearanceTitle">Appearance</h2>
+                <div class="theme-selector">
+                    <div class="theme-btn" data-theme="light">
+                        <i class="fas fa-sun"></i>
+                        <div id="themeLight">Light Mode</div>
+                    </div>
+                    <div class="theme-btn active" data-theme="dark">
+                        <i class="fas fa-moon"></i>
+                        <div id="themeDark">Dark Mode</div>
+                    </div>
+                </div>
+                
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <div class="setting-label" id="notificationsLabel">Enable Notifications</div>
+                        <div class="setting-value">
+                            <label class="switch">
+                                <input type="checkbox" id="notificationsToggle" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-label" id="soundLabel">Notification Sound</div>
+                        <div class="setting-value">
+                            <label class="switch">
+                                <input type="checkbox" id="soundToggle" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-label" id="autoRefreshLabel">Auto-refresh Data</div>
+                        <div class="setting-value">
+                            <select id="refreshInterval">
+                                <option value="5">Every 5 seconds</option>
+                                <option value="10" selected>Every 10 seconds</option>
+                                <option value="30">Every 30 seconds</option>
+                                <option value="60">Every minute</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-label" id="appVersionLabel">App Version</div>
+                        <div class="setting-value">v1.2.0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Complaint Details Modal -->
+    <div class="modal" id="complaintDetailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalComplaintTitle">Complaint Details</h2>
+                <div class="modal-subtitle" id="complaintModalSubtitle">ID: #000000</div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-details" id="complaintModalDetails">
+                    <!-- Details will be populated here -->
+                </div>
+                <div class="description-section">
+                    <div class="description-label" id="modalDescriptionLabel">Description</div>
+                    <div class="description-content" id="complaintDescription"></div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="modalClose">Close</button>
+                <button class="modal-btn modal-btn-confirm" id="modalTakeAction">Take Action</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Confirmation Modal -->
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalConfirmTitle">Confirm Action</h2>
+            </div>
+            <div class="modal-body">
+                <p class="modal-text" id="modalText">Are you sure you want to proceed with this action?</p>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="modalCancel">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" id="modalConfirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-icon">
+            <i class="fas fa-bell"></i>
+        </div>
+        <div class="toast-content">
+            <div class="toast-title" id="toastTitle">Notification</div>
+            <div class="toast-message" id="toastMessage">This is a notification message</div>
+        </div>
+    </div>
+
+    <!-- Hidden audio for notification sound -->
+    <audio id="notificationSound" preload="auto" style="display: none;">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://ykdukxfuyvucavcezftf.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_4ugDmOCauI0FLil-BPeh1g_3AhbHSzq';
+
+        // Initialize Supabase client (use a different name to avoid redeclaration errors)
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // DOM Elements
+        const loadingScreen = document.getElementById('loadingScreen');
+        const mainContent = document.getElementById('mainContent');
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const menuItems = document.querySelectorAll('.menu-item');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const userRole = document.getElementById('userRole');
+        const profileAvatar = document.getElementById('profileAvatar');
+        const profileName = document.getElementById('profileName');
+        const notificationBtn = document.getElementById('notificationBtn');
+        const notificationBadge = document.getElementById('notificationBadge');
+        const pendingBadge = document.getElementById('pendingBadge');
+        const pages = document.querySelectorAll('.page');
+        
+        // Language elements
+        const languageToggle = document.getElementById('languageToggle');
+        const languageDropdown = document.getElementById('languageDropdown');
+        const languageOptions = document.querySelectorAll('.language-option');
+        
+        // Dashboard elements
+        const pendingCount = document.getElementById('pendingCount');
+        const inProgressCount = document.getElementById('inProgressCount');
+        const resolvedCount = document.getElementById('resolvedCount');
+        const usersCount = document.getElementById('usersCount');
+        const pendingChange = document.getElementById('pendingChange');
+        const inProgressChange = document.getElementById('inProgressChange');
+        const resolvedChange = document.getElementById('resolvedChange');
+        const dashboardComplaints = document.getElementById('dashboardComplaints');
+        
+        // Modal elements
+        const complaintDetailsModal = document.getElementById('complaintDetailsModal');
+        const complaintModalSubtitle = document.getElementById('complaintModalSubtitle');
+        const complaintModalDetails = document.getElementById('complaintModalDetails');
+        const complaintDescription = document.getElementById('complaintDescription');
+        const modalClose = document.getElementById('modalClose');
+        const modalTakeAction = document.getElementById('modalTakeAction');
+        const confirmationModal = document.getElementById('confirmationModal');
+        const modalText = document.getElementById('modalText');
+        const modalCancel = document.getElementById('modalCancel');
+        const modalConfirm = document.getElementById('modalConfirm');
+        
+        // Toast elements
+        const toast = document.getElementById('toast');
+        const toastTitle = document.getElementById('toastTitle');
+        const toastMessage = document.getElementById('toastMessage');
+        
+        // Notification sound
+        const notificationSound = document.getElementById('notificationSound');
+        
+        // Current action tracking
+        let currentAction = null;
+        let currentComplaintId = null;
+        let currentComplaint = null;
+
+        // Language translations
+        const translations = {
+            en: {
+                // Navigation
+                navbarTitle: "seven 11 Dashboard",
+                menuDashboard: "Dashboard",
+                menuPending: "Pending Complaints",
+                menuInProgress: "In Progress",
+                menuResolved: "Resolved",
+                menuSettings: "Settings",
+                menuLogout: "Logout",
+                
+                // Dashboard
+                dashboardTitle: "Dashboard Overview",
+                dashboardSubtitle: "Monitor and manage all complaints from one centralized dashboard",
+                cardPendingTitle: "Pending Complaints",
+                cardInProgressTitle: "In Progress",
+                cardResolvedTitle: "Resolved Today",
+                cardUsersTitle: "Active Users",
+                cardUsersSubtitle: "Total registered",
+                recentActivityTitle: "Recent Activity",
+                noComplaints: "No complaints found",
+                allAddressed: "All complaints have been addressed!",
+                
+                // Pages
+                pendingTitle: "Pending Complaints",
+                pendingSubtitle: "Review and take action on pending complaints",
+                inProgressTitle: "Complaints In Progress",
+                inProgressSubtitle: "Monitor ongoing complaint resolutions",
+                resolvedTitle: "Resolved Complaints",
+                resolvedSubtitle: "View history of resolved complaints",
+                settingsTitle: "Settings",
+                settingsSubtitle: "Customize your dashboard experience",
+                
+                // Filters
+                filterAll: "All Priorities",
+                filterLow: "Low Priority",
+                filterMedium: "Medium Priority",
+                filterHigh: "High Priority",
+                searchPlaceholder: "Search complaints...",
+                
+                // Settings
+                appearanceTitle: "Appearance",
+                themeLight: "Light Mode",
+                themeDark: "Dark Mode",
+                notificationsLabel: "Enable Notifications",
+                soundLabel: "Notification Sound",
+                autoRefreshLabel: "Auto-refresh Data",
+                appVersionLabel: "App Version",
+                
+                // Modal
+                modalComplaintTitle: "Complaint Details",
+                modalDescriptionLabel: "Description",
+                modalConfirmTitle: "Confirm Action",
+                modalClose: "Close",
+                modalTakeAction: "Take Action",
+                modalCancel: "Cancel",
+                modalConfirm: "Confirm",
+                
+                // Actions
+                startWork: "Start Work",
+                markResolved: "Mark Resolved",
+                viewDetails: "View Details",
+                
+                // Status
+                statusPending: "Pending",
+                statusInProgress: "In Progress",
+                statusResolved: "Resolved",
+                priorityLow: "Low",
+                priorityMedium: "Medium",
+                priorityHigh: "High",
+                
+                // Toast
+                toastSuccess: "Success",
+                toastError: "Error",
+                complaintUpdated: "Complaint has been marked as {status}!",
+                loadError: "Failed to load data from database",
+                updateError: "Failed to update complaint status!",
+                languageChanged: "Language changed to {language}"
+            },
+            hi: {
+                // Navigation
+                navbarTitle: "seven 11 Dashboard",
+                menuDashboard: "डैशबोर्ड",
+                menuPending: "लंबित शिकायतें",
+                menuInProgress: "चालू कार्य",
+                menuResolved: "हल किया गया",
+                menuSettings: "सेटिंग्स",
+                menuLogout: "लॉगआउट",
+                
+                // Dashboard
+                dashboardTitle: "डैशबोर्ड अवलोकन",
+                dashboardSubtitle: "एक केंद्रीकृत डैशबोर्ड से सभी शिकायतों की निगरानी और प्रबंधन करें",
+                cardPendingTitle: "लंबित शिकायतें",
+                cardInProgressTitle: "चालू कार्य",
+                cardResolvedTitle: "आज हल की गई",
+                cardUsersTitle: "सक्रिय उपयोगकर्ता",
+                cardUsersSubtitle: "कुल पंजीकृत",
+                recentActivityTitle: "हालिया गतिविधि",
+                noComplaints: "कोई शिकायत नहीं मिली",
+                allAddressed: "सभी शिकायतों का समाधान हो चुका है!",
+                
+                // Pages
+                pendingTitle: "लंबित शिकायतें",
+                pendingSubtitle: "लंबित शिकायतों की समीक्षा करें और कार्रवाई करें",
+                inProgressTitle: "चालू शिकायतें",
+                inProgressSubtitle: "चल रहे शिकायत समाधानों की निगरानी करें",
+                resolvedTitle: "हल की गई शिकायतें",
+                resolvedSubtitle: "हल की गई शिकायतों का इतिहास देखें",
+                settingsTitle: "सेटिंग्स",
+                settingsSubtitle: "अपने डैशबोर्ड अनुभव को अनुकूलित करें",
+                
+                // Filters
+                filterAll: "सभी प्राथमिकताएं",
+                filterLow: "कम प्राथमिकता",
+                filterMedium: "मध्यम प्राथमिकता",
+                filterHigh: "उच्च प्राथमिकता",
+                searchPlaceholder: "शिकायतें खोजें...",
+                
+                // Settings
+                appearanceTitle: "दिखावट",
+                themeLight: "लाइट मोड",
+                themeDark: "डार्क मोड",
+                notificationsLabel: "सूचनाएं सक्षम करें",
+                soundLabel: "सूचना ध्वनि",
+                autoRefreshLabel: "डेटा स्वतः रीफ्रेश करें",
+                appVersionLabel: "ऐप संस्करण",
+                
+                // Modal
+                modalComplaintTitle: "शिकायत विवरण",
+                modalDescriptionLabel: "विवरण",
+                modalConfirmTitle: "कार्रवाई की पुष्टि करें",
+                modalClose: "बंद करें",
+                modalTakeAction: "कार्रवाई करें",
+                modalCancel: "रद्द करें",
+                modalConfirm: "पुष्टि करें",
+                
+                // Actions
+                startWork: "कार्य शुरू करें",
+                markResolved: "हल किया गया चिह्नित करें",
+                viewDetails: "विवरण देखें",
+                
+                // Status
+                statusPending: "लंबित",
+                statusInProgress: "चालू",
+                statusResolved: "हल किया गया",
+                priorityLow: "कम",
+                priorityMedium: "मध्यम",
+                priorityHigh: "उच्च",
+                
+                // Toast
+                toastSuccess: "सफलता",
+                toastError: "त्रुटि",
+                complaintUpdated: "शिकायत {status} के रूप में चिह्नित की गई!",
+                loadError: "डेटाबेस से डेटा लोड करने में विफल",
+                updateError: "शिकायत स्थिति अपडेट करने में विफल!",
+                languageChanged: "भाषा {language} में बदल गई"
+            },
+            mr: {
+                // Navigation
+                navbarTitle: "seven 11 Dashboard",
+                menuDashboard: "डॅशबोर्ड",
+                menuPending: "प्रलंबित तक्रारी",
+                menuInProgress: "चालू कार्य",
+                menuResolved: "सोडवलेली",
+                menuSettings: "सेटिंग्ज",
+                menuLogout: "लॉगआउट",
+                
+                // Dashboard
+                dashboardTitle: "डॅशबोर्ड आढावा",
+                dashboardSubtitle: "एका केंद्रीकृत डॅशबोर्डवरून सर्व तक्रारींचे निरीक्षण आणि व्यवस्थापन करा",
+                cardPendingTitle: "प्रलंबित तक्रारी",
+                cardInProgressTitle: "चालू कार्य",
+                cardResolvedTitle: "आज सोडवलेल्या",
+                cardUsersTitle: "सक्रिय वापरकर्ते",
+                cardUsersSubtitle: "एकूण नोंदणीकृत",
+                recentActivityTitle: "अलीकडील क्रियाकलाप",
+                noComplaints: "कोणतीही तक्रार सापडली नाही",
+                allAddressed: "सर्व तक्रारींचे निराकरण झाले आहे!",
+                
+                // Pages
+                pendingTitle: "प्रलंबित तक्रारी",
+                pendingSubtitle: "प्रलंबित तक्रारींचे पुनरावलोकन करा आणि कारवाई करा",
+                inProgressTitle: "चालू तक्रारी",
+                inProgressSubtitle: "चालू असलेल्या तक्रार निराकरणांचे निरीक्षण करा",
+                resolvedTitle: "सोडवलेल्या तक्रारी",
+                resolvedSubtitle: "सोडवलेल्या तक्रारींचा इतिहास पहा",
+                settingsTitle: "सेटिंग्ज",
+                settingsSubtitle: "आपले डॅशबोर्ड अनुभव सानुकूलित करा",
+                
+                // Filters
+                filterAll: "सर्व प्राधान्ये",
+                filterLow: "कमी प्राधान्य",
+                filterMedium: "मध्यम प्राधान्य",
+                filterHigh: "उच्च प्राधान्य",
+                searchPlaceholder: "तक्रारी शोधा...",
+                
+                // Settings
+                appearanceTitle: "देखावा",
+                themeLight: "लाइट मोड",
+                themeDark: "डार्क मोड",
+                notificationsLabel: "अधिसूचना सक्षम करा",
+                soundLabel: "अधिसूचना ध्वनी",
+                autoRefreshLabel: "डेटा स्वयं रीफ्रेश करा",
+                appVersionLabel: "ॲप आवृत्ती",
+                
+                // Modal
+                modalComplaintTitle: "तक्रार तपशील",
+                modalDescriptionLabel: "वर्णन",
+                modalConfirmTitle: "कृतीची पुष्टी करा",
+                modalClose: "बंद करा",
+                modalTakeAction: "कृती करा",
+                modalCancel: "रद्द करा",
+                modalConfirm: "पुष्टी करा",
+                
+                // Actions
+                startWork: "कार्य सुरू करा",
+                markResolved: "सोडवलेले चिन्हांकित करा",
+                viewDetails: "तपशील पहा",
+                
+                // Status
+                statusPending: "प्रलंबित",
+                statusInProgress: "चालू",
+                statusResolved: "सोडवलेले",
+                priorityLow: "कमी",
+                priorityMedium: "मध्यम",
+                priorityHigh: "उच्च",
+                
+                // Toast
+                toastSuccess: "यशस्वी",
+                toastError: "त्रुटी",
+                complaintUpdated: "तक्रार {status} म्हणून चिन्हांकित केली गेली!",
+                loadError: "डेटाबेस वरून डेटा लोड करण्यात अयशस्वी",
+                updateError: "तक्रार स्थिती अपडेट करण्यात अयशस्वी!",
+                languageChanged: "भाषा {language} मध्ये बदलली"
+            }
+        };
+
+        // Application State
+        const state = {
+            currentUser: null,
+            db: null,
+            currentPage: 'dashboard',
+            lastNotificationCheck: new Date().toISOString(),
+            notificationCheckInterval: null,
+            dataRefreshInterval: null,
+            soundEnabled: true,
+            refreshInterval: 10000,
+            allComplaints: [],
+            allUsers: [],
+            todayResolved: 0,
+            todayPending: 0,
+            currentLanguage: localStorage.getItem('dashboard_language') || 'en'
+        };
+
+        // Database class - UPDATED to handle admin-specific assignments
+        class SupabaseDatabase {
+            constructor(adminType, adminId) {
+                this.supabase = (typeof supabaseClient !== 'undefined') ? supabaseClient : (window.supabase ? window.supabase : null);
+                this.adminType = adminType;
+                this.adminId = adminId; // Store admin ID
+            }
+            
+            // Get complaints visible to this specific admin
+            async getComplaintsForAdmin() {
+                try {
+                    // Simpler: fetch all complaints for this admin type and filter locally.
+                    // This avoids complex .or queries that may fail across client versions.
+                    const { data, error } = await this.supabase
+                        .from('complaints')
+                        .select('*')
+                        .eq('type', this.adminType)
+                        .order('date', { ascending: false });
+
+                    if (error) throw error;
+
+                    const complaints = data || [];
+
+                    // Keep only complaints that are visible to this admin:
+                    // - pending: visible to all admins of the type
+                    // - inprogress: visible if assigned_to === this.adminId
+                    // - resolved: visible to all
+                    return complaints.filter(c => {
+                        if (!c || !c.status) return false;
+                        if (c.status === 'pending') return true;
+                        if (c.status === 'resolved') return true;
+                        if (c.status === 'inprogress') return c.assigned_to === this.adminId || !c.assigned_to;
+                        return false;
+                    });
+                } catch (error) {
+                    console.error('Get complaints for admin error:', error);
+                    return [];
+                }
+            }
+            
+            async getPendingComplaints() {
+                try {
+                    // Pending complaints are visible to all admins of this type
+                    const { data, error } = await this.supabase
+                        .from('complaints')
+                        .select('*')
+                        .eq('status', 'pending')
+                        .eq('type', this.adminType)
+                        .order('date', { ascending: false });
+
+                    if (error) throw error;
+                    return data || [];
+                } catch (error) {
+                    console.error('Get pending complaints error:', error);
+                    return [];
+                }
+            }
+            
+            async getInProgressComplaints() {
+                try {
+                    // Only show in-progress complaints assigned to this specific admin
+                    const { data, error } = await this.supabase
+                        .from('complaints')
+                        .select('*')
+                        .eq('status', 'inprogress')
+                        .eq('assigned_to', this.adminId)
+                        .eq('type', this.adminType)
+                        .order('date', { ascending: false });
+
+                    if (error) throw error;
+                    return data || [];
+                } catch (error) {
+                    console.error('Get in-progress complaints error:', error);
+                    return [];
+                }
+            }
+            
+            async getResolvedComplaints() {
+                try {
+                    // All resolved complaints are visible
+                    const { data, error } = await this.supabase
+                        .from('complaints')
+                        .select('*')
+                        .eq('status', 'resolved')
+                        .eq('type', this.adminType)
+                        .order('date', { ascending: false });
+
+                    if (error) throw error;
+                    return data || [];
+                } catch (error) {
+                    console.error('Get resolved complaints error:', error);
+                    return [];
+                }
+            }
+            
+            async getAllUsers() {
+                try {
+                    const { data, error } = await this.supabase
+                        .from('users')
+                        .select('*');
+
+                    if (error) throw error;
+                    return data || [];
+                } catch (error) {
+                    console.error('Get all users error:', error);
+                    return [];
+                }
+            }
+            
+            async updateComplaintStatus(complaintId, status) {
+                try {
+                    const updateData = {
+                        status: status,
+                        updated: new Date().toISOString()
+                    };
+                    
+                    // If starting work, assign the complaint to this admin
+                    if (status === 'inprogress') {
+                        updateData.assigned_to = this.adminId;
+                    }
+                    
+                    const { data, error } = await this.supabase
+                        .from('complaints')
+                        .update(updateData)
+                        .eq('id', complaintId)
+                        .select()
+                        .single();
+
+                    if (error) throw error;
+                    return data;
+                } catch (error) {
+                    console.error('Update complaint status error:', error);
+                    return null;
+                }
+            }
+            
+            async getAdminNotifications() {
+                try {
+                    const { data, error } = await this.supabase
+                        .from('complaints')
+                        .select('*')
+                        .eq('type', this.adminType)
+                        .order('date', { ascending: false })
+                        .limit(10);
+
+                    if (error) throw error;
+                    
+                    return (data || []).map(complaint => ({
+                        id: complaint.id,
+                        title: 'New Complaint',
+                        message: `${complaint.user_name} submitted a new ${complaint.priority} priority complaint`,
+                        read: false,
+                        date: complaint.date
+                    }));
+                } catch (error) {
+                    console.error('Get notifications error:', error);
+                    return [];
+                }
+            }
+            
+            async getUnreadNotificationCount() {
+                try {
+                    const { data, error } = await this.supabase
+                        .from('complaints')
+                        .select('id')
+                        .eq('status', 'pending')
+                        .eq('type', this.adminType)
+                        .limit(10);
+
+                    if (error) throw error;
+                    return data ? data.length : 0;
+                } catch (error) {
+                    console.error('Get notification count error:', error);
+                    return 0;
+                }
+            }
+            
+            async checkForNewComplaints(lastCheck) {
+                try {
+                    const { data, error } = await this.supabase
+                        .from('complaints')
+                        .select('*')
+                        .eq('status', 'pending')
+                        .eq('type', this.adminType)
+                        .gt('date', lastCheck);
+
+                    if (error) throw error;
+                    return data || [];
+                } catch (error) {
+                    console.error('Check new complaints error:', error);
+                    return [];
+                }
+            }
+            
+            getSettings() {
+                return JSON.parse(localStorage.getItem('app_settings') || '{"theme":"dark","notifications":true,"sound":true}');
+            }
+            
+            updateSettings(settings) {
+                localStorage.setItem('app_settings', JSON.stringify(settings));
+            }
+        }
+
+        // Initialize the app
+        async function initApp() {
+            console.log('Initializing app...');
+            
+            // Check session first
+            const sessionData = checkSession();
+            
+            if (!sessionData) {
+                console.log('No valid session, redirecting to login...');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+                return;
+            }
+            
+            state.currentUser = sessionData;
+            
+            // Initialize database with admin_type and admin ID
+            state.db = new SupabaseDatabase(state.currentUser.admin_type, state.currentUser.id);
+            
+            try {
+                // Load admin data
+                await loadAdminData();
+                loadSettings();
+                setupEventListeners();
+                
+                // Apply saved language
+                applyLanguage(state.currentLanguage);
+                
+                // Hide loading screen and show main content
+                setTimeout(() => {
+                    loadingScreen.classList.add('hidden');
+                    mainContent.classList.add('loaded');
+                    console.log('App initialized successfully');
+                }, 500);
+                
+                // Start background processes
+                await updateNotificationBadge();
+                startNotificationChecker();
+                startDataRefresh();
+                
+                // Load initial data
+                setTimeout(() => loadAllData(), 300);
+                
+                // Request notification permission
+                requestNotificationPermission();
+                
+                // Setup visibility change listener
+                document.addEventListener('visibilitychange', handleVisibilityChange);
+                
+            } catch (error) {
+                console.error('Error during app initialization:', error);
+                showToast('Error', 'Failed to initialize application', false);
+                
+                // Still show the app even if some parts fail
+                loadingScreen.classList.add('hidden');
+                mainContent.classList.add('loaded');
+            }
+        }
+        
+        // Language functions
+        function applyLanguage(lang) {
+            state.currentLanguage = lang;
+            localStorage.setItem('dashboard_language', lang);
+            
+            // Update active language option
+            languageOptions.forEach(option => {
+                if (option.getAttribute('data-lang') === lang) {
+                    option.classList.add('active');
+                } else {
+                    option.classList.remove('active');
+                }
+            });
+            
+            // Get translations for current language
+            const t = translations[lang] || translations.en;
+            
+            // Update navigation
+            document.getElementById('navbarTitle').textContent = t.navbarTitle;
+            document.getElementById('menuDashboard').textContent = t.menuDashboard;
+            document.getElementById('menuPending').textContent = t.menuPending;
+            document.getElementById('menuInProgress').textContent = t.menuInProgress;
+            document.getElementById('menuResolved').textContent = t.menuResolved;
+            document.getElementById('menuSettings').textContent = t.menuSettings;
+            document.getElementById('menuLogout').textContent = t.menuLogout;
+            
+            // Update dashboard
+            document.getElementById('dashboardTitle').textContent = t.dashboardTitle;
+            document.getElementById('dashboardSubtitle').textContent = t.dashboardSubtitle;
+            document.getElementById('cardPendingTitle').textContent = t.cardPendingTitle;
+            document.getElementById('cardInProgressTitle').textContent = t.cardInProgressTitle;
+            document.getElementById('cardResolvedTitle').textContent = t.cardResolvedTitle;
+            document.getElementById('cardUsersTitle').textContent = t.cardUsersTitle;
+            document.getElementById('cardUsersSubtitle').textContent = t.cardUsersSubtitle;
+            document.getElementById('recentActivityTitle').textContent = t.recentActivityTitle;
+            
+            // Update other pages
+            document.getElementById('pendingTitle').textContent = t.pendingTitle;
+            document.getElementById('pendingSubtitle').textContent = t.pendingSubtitle;
+            document.getElementById('inProgressTitle').textContent = t.inProgressTitle;
+            document.getElementById('inProgressSubtitle').textContent = t.inProgressSubtitle;
+            document.getElementById('resolvedTitle').textContent = t.resolvedTitle;
+            document.getElementById('resolvedSubtitle').textContent = t.resolvedSubtitle;
+            document.getElementById('settingsTitle').textContent = t.settingsTitle;
+            document.getElementById('settingsSubtitle').textContent = t.settingsSubtitle;
+            
+            // Update filters
+            document.getElementById('filterAll').textContent = t.filterAll;
+            document.getElementById('filterLow').textContent = t.filterLow;
+            document.getElementById('filterMedium').textContent = t.filterMedium;
+            document.getElementById('filterHigh').textContent = t.filterHigh;
+            
+            // Update search placeholders
+            const searchInputs = document.querySelectorAll('.search-bar');
+            searchInputs.forEach(input => {
+                input.placeholder = t.searchPlaceholder;
+            });
+            
+            // Update settings
+            document.getElementById('appearanceTitle').textContent = t.appearanceTitle;
+            document.getElementById('themeLight').textContent = t.themeLight;
+            document.getElementById('themeDark').textContent = t.themeDark;
+            document.getElementById('notificationsLabel').textContent = t.notificationsLabel;
+            document.getElementById('soundLabel').textContent = t.soundLabel;
+            document.getElementById('autoRefreshLabel').textContent = t.autoRefreshLabel;
+            document.getElementById('appVersionLabel').textContent = t.appVersionLabel;
+            
+            // Update modal
+            document.getElementById('modalComplaintTitle').textContent = t.modalComplaintTitle;
+            document.getElementById('modalDescriptionLabel').textContent = t.modalDescriptionLabel;
+            document.getElementById('modalConfirmTitle').textContent = t.modalConfirmTitle;
+            document.getElementById('modalClose').textContent = t.modalClose;
+            document.getElementById('modalTakeAction').textContent = t.modalTakeAction;
+            document.getElementById('modalCancel').textContent = t.modalCancel;
+            document.getElementById('modalConfirm').textContent = t.modalConfirm;
+            
+            // Show notification
+            const languageNames = {en: 'English', hi: 'Hindi', mr: 'Marathi'};
+            showToast(t.toastSuccess, t.languageChanged.replace('{language}', languageNames[lang]), true);
+            
+            // Update any dynamic content
+            updateCurrentPage();
+        }
+        
+        function changeLanguage(lang) {
+            applyLanguage(lang);
+        }
+        
+        // Check session with persistent login
+        function checkSession() {
+            try {
+                const sessionData = JSON.parse(localStorage.getItem('current_session'));
+                
+                if (!sessionData) {
+                    console.log('No session data found');
+                    return null;
+                }
+                
+                if (!sessionData.isAdmin) {
+                    console.log('User is not admin');
+                    return null;
+                }
+                
+                if (!sessionData.admin_type) {
+                    console.log('No admin_type found in session');
+                    return null;
+                }
+                
+                if (!sessionData.id) {
+                    console.log('No admin ID found in session');
+                    return null;
+                }
+                
+                if (sessionData.expires && sessionData.expires < Date.now()) {
+                    console.log('Session expired');
+                    localStorage.removeItem('current_session');
+                    return null;
+                }
+                
+                console.log('Session validated successfully');
+                console.log('Admin type:', sessionData.admin_type);
+                console.log('Admin ID:', sessionData.id);
+                return sessionData;
+            } catch (error) {
+                console.error('Error checking session:', error);
+                return null;
+            }
+        }
+        
+        async function loadAdminData() {
+            const avatarChar = state.currentUser.name ? state.currentUser.name.charAt(0).toUpperCase() : 'A';
+            userAvatar.textContent = avatarChar;
+            profileAvatar.textContent = avatarChar;
+            userName.textContent = state.currentUser.name || 'System Administrator';
+            profileName.textContent = state.currentUser.name ? state.currentUser.name.split(' ')[0] : 'Admin';
+            
+            const adminType = state.currentUser.admin_type || 'Admin';
+            userRole.textContent = adminType.charAt(0).toUpperCase() + adminType.slice(1);
+            
+            document.querySelectorAll('.page-title').forEach(title => {
+                const baseText = title.textContent;
+                title.innerHTML = `<span>${baseText}</span><span class="role-indicator">${adminType}</span>`;
+            });
+        }
+        
+        async function loadAllData() {
+            try {
+                const [complaints, users] = await Promise.all([
+                    state.db.getComplaintsForAdmin(),
+                    state.db.getAllUsers()
+                ]);
+                
+                state.allComplaints = complaints;
+                state.allUsers = users;
+                
+                const today = new Date().toDateString();
+                state.todayResolved = complaints.filter(c => {
+                    if (!c.updated) return false;
+                    const updatedDate = new Date(c.updated);
+                    return updatedDate.toDateString() === today && c.status === 'resolved';
+                }).length;
+                
+                state.todayPending = complaints.filter(c => {
+                    const complaintDate = new Date(c.date);
+                    return complaintDate.toDateString() === today && c.status === 'pending';
+                }).length;
+                
+                updateDashboard();
+                updateCurrentPage();
+                updatePendingBadge();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                const t = translations[state.currentLanguage] || translations.en;
+                showToast(t.toastError, t.loadError, false);
+            }
+        }
+        
+        function updateDashboard() {
+            const pending = state.allComplaints.filter(c => c.status === 'pending').length;
+            const inProgress = state.allComplaints.filter(c => c.status === 'inprogress').length;
+            const resolved = state.allComplaints.filter(c => c.status === 'resolved').length;
+            
+            pendingCount.textContent = pending;
+            inProgressCount.textContent = inProgress;
+            resolvedCount.textContent = state.todayResolved;
+            usersCount.textContent = state.allUsers.length;
+            
+            const t = translations[state.currentLanguage] || translations.en;
+            pendingChange.textContent = `+${state.todayPending} today`;
+            inProgressChange.textContent = `+${inProgress} active`;
+            resolvedChange.textContent = `+${state.todayResolved} resolved`;
+            
+            const recentComplaints = [...state.allComplaints]
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
+            
+            renderComplaintList(dashboardComplaints, recentComplaints, false, false);
+        }
+        
+        function updateCurrentPage() {
+            switch(state.currentPage) {
+                case 'dashboard':
+                    updateDashboard();
+                    break;
+                case 'pending':
+                    renderPending();
+                    break;
+                case 'inProgress':
+                    renderInProgress();
+                    break;
+                case 'resolved':
+                    renderResolved();
+                    break;
+            }
+        }
+        
+        function updatePendingBadge() {
+            const pendingCount = state.allComplaints.filter(c => c.status === 'pending').length;
+            pendingBadge.textContent = pendingCount;
+            pendingBadge.style.display = pendingCount > 0 ? 'inline-block' : 'none';
+        }
+        
+        function loadSettings() {
+            const settings = state.db.getSettings();
+            
+            if (settings.theme === 'dark') {
+                document.body.classList.add('dark-theme');
+                document.querySelectorAll('.theme-btn').forEach(btn => {
+                    if (btn.getAttribute('data-theme') === 'dark') {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            } else {
+                document.body.classList.remove('dark-theme');
+                document.querySelectorAll('.theme-btn').forEach(btn => {
+                    if (btn.getAttribute('data-theme') === 'light') {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+            
+            document.getElementById('notificationsToggle').checked = settings.notifications !== false;
+            document.getElementById('soundToggle').checked = settings.sound !== false;
+            state.soundEnabled = settings.sound !== false;
+            
+            const refreshSelect = document.getElementById('refreshInterval');
+            if (refreshSelect && settings.refreshInterval) {
+                refreshSelect.value = settings.refreshInterval;
+                state.refreshInterval = parseInt(settings.refreshInterval) * 1000;
+            }
+        }
+        
+        function setupEventListeners() {
+            // Menu toggle
+            menuBtn.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+            
+            // Menu items navigation
+            menuItems.forEach(item => {
+                if (item.id !== 'logoutBtn') {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const page = item.getAttribute('data-page');
+                        navigateToPage(page);
+                        toggleSidebar();
+                    });
+                }
+            });
+            
+            // Logout
+            logoutBtn.addEventListener('click', handleLogout);
+            
+            // Language toggle
+            languageToggle.addEventListener('click', () => {
+                languageDropdown.classList.toggle('active');
+            });
+            
+            // Language options
+            languageOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    const lang = option.getAttribute('data-lang');
+                    changeLanguage(lang);
+                    languageDropdown.classList.remove('active');
+                });
+            });
+            
+            // Close language dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!languageToggle.contains(e.target) && !languageDropdown.contains(e.target)) {
+                    languageDropdown.classList.remove('active');
+                }
+            });
+            
+            // Theme buttons
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const theme = btn.getAttribute('data-theme');
+                    changeTheme(theme);
+                    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+            
+            // Settings changes
+            document.getElementById('notificationsToggle').addEventListener('change', updateSettings);
+            document.getElementById('soundToggle').addEventListener('change', updateSettings);
+            document.getElementById('refreshInterval').addEventListener('change', updateRefreshInterval);
+            
+            // Modal events
+            modalClose.addEventListener('click', () => {
+                complaintDetailsModal.classList.remove('active');
+            });
+            
+            modalTakeAction.addEventListener('click', () => {
+                complaintDetailsModal.classList.remove('active');
+                if (currentComplaint) {
+                    showActionConfirmation(currentComplaint);
+                }
+            });
+            
+            modalCancel.addEventListener('click', () => {
+                confirmationModal.classList.remove('active');
+            });
+            
+            modalConfirm.addEventListener('click', () => {
+                confirmationModal.classList.remove('active');
+                if (currentAction) {
+                    currentAction();
+                }
+            });
+            
+            // Notification button
+            notificationBtn.addEventListener('click', showLatestNotification);
+            
+            // Filter and search events
+            ['pending', 'inProgress', 'resolved'].forEach(page => {
+                const filter = document.getElementById(`${page}Filter`);
+                const search = document.getElementById(`${page}Search`);
+                
+                if (filter) filter.addEventListener('change', () => renderPage(page));
+                if (search) search.addEventListener('input', () => renderPage(page));
+            });
+        }
+        
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+        }
+        
+        function navigateToPage(page) {
+            menuItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-page') === page) {
+                    item.classList.add('active');
+                }
+            });
+            
+            pages.forEach(p => p.classList.remove('active'));
+            
+            const targetPage = document.getElementById(`${page}Page`);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                state.currentPage = page;
+                renderPage(page);
+            }
+        }
+        
+        function renderPage(page) {
+            switch(page) {
+                case 'pending':
+                    renderPending();
+                    break;
+                case 'inProgress':
+                    renderInProgress();
+                    break;
+                case 'resolved':
+                    renderResolved();
+                    break;
+                case 'dashboard':
+                    updateDashboard();
+                    break;
+            }
+        }
+        
+        function renderPending() {
+            let complaints = state.allComplaints.filter(c => c.status === 'pending');
+            
+            const filter = document.getElementById('pendingFilter').value;
+            if (filter !== 'all') {
+                complaints = complaints.filter(c => c.priority === filter);
+            }
+            
+            const search = document.getElementById('pendingSearch').value.toLowerCase();
+            if (search) {
+                complaints = complaints.filter(c => 
+                    c.description.toLowerCase().includes(search) ||
+                    c.user_name.toLowerCase().includes(search) ||
+                    c.priority.toLowerCase().includes(search) ||
+                    c.floor.toString().includes(search) ||
+                    c.room.toString().includes(search)
+                );
+            }
+            
+            complaints.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            renderComplaintList(document.getElementById('pendingComplaints'), complaints, true, true);
+        }
+        
+        function renderInProgress() {
+            let complaints = state.allComplaints.filter(c => c.status === 'inprogress');
+            
+            const filter = document.getElementById('inProgressFilter').value;
+            if (filter !== 'all') {
+                complaints = complaints.filter(c => c.priority === filter);
+            }
+            
+            const search = document.getElementById('inProgressSearch').value.toLowerCase();
+            if (search) {
+                complaints = complaints.filter(c => 
+                    c.description.toLowerCase().includes(search) ||
+                    c.user_name.toLowerCase().includes(search) ||
+                    c.priority.toLowerCase().includes(search) ||
+                    c.floor.toString().includes(search) ||
+                    c.room.toString().includes(search)
+                );
+            }
+            
+            complaints.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            renderComplaintList(document.getElementById('inProgressComplaints'), complaints, true, true);
+        }
+        
+        function renderResolved() {
+            let complaints = state.allComplaints.filter(c => c.status === 'resolved');
+            
+            const filter = document.getElementById('resolvedFilter').value;
+            if (filter !== 'all') {
+                complaints = complaints.filter(c => c.priority === filter);
+            }
+            
+            const search = document.getElementById('resolvedSearch').value.toLowerCase();
+            if (search) {
+                complaints = complaints.filter(c => 
+                    c.description.toLowerCase().includes(search) ||
+                    c.user_name.toLowerCase().includes(search) ||
+                    c.priority.toLowerCase().includes(search) ||
+                    c.floor.toString().includes(search) ||
+                    c.room.toString().includes(search)
+                );
+            }
+            
+            complaints.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            renderComplaintList(document.getElementById('resolvedComplaints'), complaints, true, false);
+        }
+        
+        function renderComplaintList(container, complaints, showUser = false, showActions = false) {
+            container.innerHTML = '';
+            
+            if (complaints.length === 0) {
+                const t = translations[state.currentLanguage] || translations.en;
+                const adminType = state.currentUser.admin_type || 'department';
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>${t.noComplaints}</h3>
+                        <p>${showActions ? t.allAddressed : `No ${adminType} complaints found`}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const t = translations[state.currentLanguage] || translations.en;
+            
+            complaints.forEach((complaint, index) => {
+                const complaintElement = document.createElement('div');
+                complaintElement.className = 'complaint-item';
+                complaintElement.setAttribute('data-id', complaint.id);
+                complaintElement.style.setProperty('--item-index', index);
+                
+                const date = new Date(complaint.date);
+                const updated = new Date(complaint.updated || complaint.date);
+                const formattedDate = date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                let assignedInfo = '';
+                if (complaint.assigned_to) {
+                    assignedInfo = `
+                        <div class="complaint-info-item">
+                            <i class="fas fa-user-shield"></i>
+                            <span>Assigned to: ${complaint.assigned_to === state.currentUser.id ? 'You' : complaint.assigned_to}</span>
+                        </div>
+                    `;
+                }
+                
+                let userInfo = '';
+                if (showUser) {
+                    userInfo = `
+                        <div class="complaint-info-item">
+                            <i class="fas fa-user"></i>
+                            <span>${complaint.user_name}</span>
+                        </div>
+                    `;
+                }
+
+                // Thumbnail if photo available
+                let thumbHtml = '';
+                if (complaint.photo_url) {
+                    thumbHtml = `
+                        <div class="complaint-thumb-wrapper">
+                            <img class="complaint-thumb" src="${complaint.photo_url}" alt="photo" />
+                        </div>
+                    `;
+                }
+                
+                complaintElement.innerHTML = `
+                    <div class="complaint-header">
+                        <div class="complaint-title">${complaint.description.substring(0, 100)}${complaint.description.length > 100 ? '...' : ''}</div>
+                        <div class="complaint-priority priority-${complaint.priority}">${t[`priority${complaint.priority.charAt(0).toUpperCase() + complaint.priority.slice(1)}`] || complaint.priority}</div>
+                    </div>
+                    <div class="complaint-info">
+                        ${userInfo}
+                        ${thumbHtml}
+                        ${assignedInfo}
+                        <div class="complaint-info-item">
+                            <i class="fas fa-building"></i>
+                            <span>Floor ${complaint.floor}, Room ${complaint.room}</span>
+                        </div>
+                        <div class="complaint-info-item">
+                            <i class="fas fa-tools"></i>
+                            <span>Type: ${complaint.type}</span>
+                        </div>
+                    </div>
+                    <div class="complaint-desc">${complaint.description}</div>
+                    <div class="complaint-footer">
+                        <div class="complaint-status status-${complaint.status}">${t[`status${complaint.status.charAt(0).toUpperCase() + complaint.status.slice(1)}`] || complaint.status}</div>
+                        <div class="complaint-date">${formattedDate}</div>
+                    </div>
+                `;
+                
+                if (showActions) {
+                    const actionContainer = document.createElement('div');
+                    actionContainer.className = 'action-buttons';
+                    
+                    // Check if current admin can take action
+                    // 1. Pending complaints can be started by any admin
+                    // 2. In-progress complaints can only be resolved by the assigned admin
+                    const canTakeAction = 
+                        complaint.status === 'pending' || 
+                        (complaint.status === 'inprogress' && complaint.assigned_to === state.currentUser.id);
+                    
+                    if (canTakeAction) {
+                        if (complaint.status === 'pending') {
+                            const workBtn = document.createElement('button');
+                            workBtn.className = 'action-btn work-btn';
+                            workBtn.innerHTML = `<i class="fas fa-play"></i> ${t.startWork}`;
+                            workBtn.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                showConfirmation('Start working on this complaint?', () => {
+                                    startWorkOnComplaint(complaint.id);
+                                });
+                            });
+                            actionContainer.appendChild(workBtn);
+                        }
+                        
+                        if (complaint.status === 'inprogress') {
+                            const resolveBtn = document.createElement('button');
+                            resolveBtn.className = 'action-btn resolve-btn';
+                            resolveBtn.innerHTML = `<i class="fas fa-check"></i> ${t.markResolved}`;
+                            resolveBtn.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                showConfirmation('Mark this complaint as resolved?', () => {
+                                    markComplaintResolved(complaint.id);
+                                });
+                            });
+                            actionContainer.appendChild(resolveBtn);
+                        }
+                    }
+                    
+                    // Always show view details button
+                    const viewBtn = document.createElement('button');
+                    viewBtn.className = 'action-btn view-btn';
+                    viewBtn.innerHTML = `<i class="fas fa-eye"></i> ${t.viewDetails}`;
+                    viewBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showComplaintDetails(complaint);
+                    });
+                    actionContainer.appendChild(viewBtn);
+                    
+                    complaintElement.appendChild(actionContainer);
+                } else {
+                    complaintElement.addEventListener('click', () => {
+                        showComplaintDetails(complaint);
+                    });
+                }
+                
+                container.appendChild(complaintElement);
+            });
+        }
+        
+        function startWorkOnComplaint(complaintId) {
+            showConfirmation('Start working on this complaint?', async () => {
+                try {
+                    const updatedComplaint = await state.db.updateComplaintStatus(
+                        complaintId, 
+                        'inprogress'
+                    );
+                    
+                    if (updatedComplaint) {
+                        // Refresh the complaints list
+                        await loadAllData();
+                        showToast('Success', 'You are now working on this complaint!');
+                    }
+                } catch (error) {
+                    console.error('Error starting work:', error);
+                    showToast('Error', 'Failed to start work on complaint');
+                }
+            });
+        }
+        
+        function markComplaintResolved(complaintId) {
+            showConfirmation('Mark this complaint as resolved?', async () => {
+                try {
+                    const updatedComplaint = await state.db.updateComplaintStatus(
+                        complaintId, 
+                        'resolved'
+                    );
+                    
+                    if (updatedComplaint) {
+                        await loadAllData();
+                        showToast('Success', 'Complaint marked as resolved!');
+                    }
+                } catch (error) {
+                    console.error('Error resolving complaint:', error);
+                    showToast('Error', 'Failed to mark complaint as resolved');
+                }
+            });
+        }
+        
+        function showComplaintDetails(complaint) {
+            currentComplaint = complaint;
+            
+            const t = translations[state.currentLanguage] || translations.en;
+            
+            const date = new Date(complaint.date);
+            const updated = new Date(complaint.updated || complaint.date);
+            const formattedDate = date.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const formattedUpdated = updated.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            complaintModalSubtitle.textContent = `ID: #${complaint.id.substring(0, 8).toUpperCase()}`;
+            
+            let assignedInfo = '';
+            if (complaint.assigned_to) {
+                assignedInfo = `
+                    <div class="detail-item">
+                        <div class="detail-label">Assigned To</div>
+                        <div class="detail-value">${complaint.assigned_to === state.currentUser.id ? 'You' : complaint.assigned_to}</div>
+                    </div>
+                `;
+            }
+            
+            complaintModalDetails.innerHTML = `
+                <div class="detail-item">
+                    <div class="detail-label">User</div>
+                    <div class="detail-value">${complaint.user_name}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Location</div>
+                    <div class="detail-value">Floor ${complaint.floor}, Room ${complaint.room}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Type</div>
+                    <div class="detail-value">${complaint.type}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Priority</div>
+                    <div class="detail-badge priority-${complaint.priority}">${t[`priority${complaint.priority.charAt(0).toUpperCase() + complaint.priority.slice(1)}`] || complaint.priority}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Status</div>
+                    <div class="detail-badge status-${complaint.status}">${t[`status${complaint.status.charAt(0).toUpperCase() + complaint.status.slice(1)}`] || complaint.status}</div>
+                </div>
+                ${assignedInfo}
+                <div class="detail-item">
+                    <div class="detail-label">Submitted</div>
+                    <div class="detail-value">${formattedDate}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Last Updated</div>
+                    <div class="detail-value">${formattedUpdated}</div>
+                </div>
+            `;
+            
+            complaintDescription.textContent = complaint.description;
+
+            // Show attached photo if present
+            const existingPhoto = complaintModalDetails.querySelector('.detail-photo');
+            if (complaint.photo_url) {
+                const photoHtml = `
+                    <div class="detail-item detail-photo">
+                        <div class="detail-label">Photo</div>
+                        <div class="detail-value">
+                            <img src="${complaint.photo_url}" alt="Complaint Photo" id="modalComplaintPhoto" style="max-width:100%;border-radius:8px;cursor:pointer;" />
+                        </div>
+                    </div>
+                `;
+
+                // Append or replace
+                if (existingPhoto) {
+                    existingPhoto.parentNode.replaceChild(createElementFromHTML(photoHtml), existingPhoto);
+                } else {
+                    complaintModalDetails.insertAdjacentHTML('beforeend', photoHtml);
+                }
+
+                // Add click to open larger
+                setTimeout(() => {
+                    const img = document.getElementById('modalComplaintPhoto');
+                    if (img) img.addEventListener('click', () => window.open(complaint.photo_url, '_blank'));
+                }, 10);
+            } else if (existingPhoto) {
+                existingPhoto.remove();
+            }
+            
+            if (complaint.status === 'pending') {
+                modalTakeAction.textContent = t.startWork;
+                modalTakeAction.style.display = 'block';
+            } else if (complaint.status === 'inprogress' && complaint.assigned_to === state.currentUser.id) {
+                modalTakeAction.textContent = t.markResolved;
+                modalTakeAction.style.display = 'block';
+            } else {
+                modalTakeAction.style.display = 'none';
+            }
+            
+            complaintDetailsModal.classList.add('active');
+        }
+        
+        function showActionConfirmation(complaint) {
+            const t = translations[state.currentLanguage] || translations.en;
+            let message = '';
+            let action = null;
+            
+            if (complaint.status === 'pending') {
+                message = 'Are you sure you want to start working on this complaint?';
+                action = () => startWorkOnComplaint(complaint.id);
+            } else if (complaint.status === 'inprogress' && complaint.assigned_to === state.currentUser.id) {
+                message = 'Are you sure this complaint has been resolved?';
+                action = () => markComplaintResolved(complaint.id);
+            }
+            
+            if (message && action) {
+                showConfirmation(message, action);
+            }
+        }
+        
+        function showConfirmation(message, action) {
+            modalText.textContent = message;
+            currentAction = action;
+            confirmationModal.classList.add('active');
+        }
+
+        // Utility to convert HTML string to element
+        function createElementFromHTML(htmlString) {
+            const div = document.createElement('div');
+            div.innerHTML = htmlString.trim();
+            return div.firstChild;
+        }
+        
+        function changeTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+            }
+            
+            const settings = state.db.getSettings();
+            settings.theme = theme;
+            state.db.updateSettings(settings);
+        }
+        
+        function updateSettings() {
+            const settings = state.db.getSettings();
+            settings.notifications = document.getElementById('notificationsToggle').checked;
+            settings.sound = document.getElementById('soundToggle').checked;
+            state.soundEnabled = settings.sound;
+            state.db.updateSettings(settings);
+        }
+        
+        function updateRefreshInterval() {
+            const interval = parseInt(document.getElementById('refreshInterval').value);
+            state.refreshInterval = interval * 1000;
+            
+            const settings = state.db.getSettings();
+            settings.refreshInterval = interval;
+            state.db.updateSettings(settings);
+            
+            if (state.dataRefreshInterval) {
+                clearInterval(state.dataRefreshInterval);
+            }
+            startDataRefresh();
+        }
+        
+        async function updateNotificationBadge() {
+            try {
+                const unreadCount = await state.db.getUnreadNotificationCount();
+                notificationBadge.textContent = unreadCount;
+                notificationBadge.style.display = unreadCount > 0 ? 'flex' : 'none';
+            } catch (error) {
+                console.error('Error updating notification badge:', error);
+            }
+        }
+        
+        function playNotificationSound() {
+            if (state.soundEnabled && notificationSound) {
+                try {
+                    notificationSound.currentTime = 0;
+                    notificationSound.play().catch(e => {
+                        console.log('Audio play failed:', e);
+                    });
+                } catch (error) {
+                    console.error('Error playing notification sound:', error);
+                }
+            }
+        }
+        
+        function showToast(title, message, isSuccess = true) {
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+            
+            toast.style.borderLeftColor = isSuccess ? 'var(--success-color)' : 'var(--danger-color)';
+            toast.classList.add('active');
+            
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 5000);
+        }
+        
+        async function showLatestNotification() {
+            try {
+                const notifications = await state.db.getAdminNotifications();
+                if (notifications.length > 0) {
+                    const latest = notifications[0];
+                    showToast(latest.title, latest.message, true);
+                    playNotificationSound();
+                    await updateNotificationBadge();
+                }
+            } catch (error) {
+                console.error('Error showing latest notification:', error);
+            }
+        }
+        
+        function startNotificationChecker() {
+            state.notificationCheckInterval = setInterval(async () => {
+                await checkForNewComplaints();
+            }, 5000);
+        }
+        
+        async function checkForNewComplaints() {
+            try {
+                const newComplaints = await state.db.checkForNewComplaints(state.lastNotificationCheck);
+                
+                if (newComplaints.length > 0) {
+                    state.lastNotificationCheck = new Date().toISOString();
+                    state.allComplaints = [...newComplaints, ...state.allComplaints];
+                    
+                    newComplaints.forEach(complaint => {
+                        const title = 'New Complaint';
+                        const message = `${complaint.user_name} submitted a ${complaint.priority} priority complaint`;
+                        
+                        showToast(title, message);
+                        playNotificationSound();
+                    });
+                    
+                    updateNotificationBadge();
+                    updatePendingBadge();
+                    updateDashboard();
+                    updateCurrentPage();
+                }
+            } catch (error) {
+                console.error('Check new complaints error:', error);
+            }
+        }
+        
+        function startDataRefresh() {
+            state.dataRefreshInterval = setInterval(async () => {
+                await loadAllData();
+            }, state.refreshInterval);
+        }
+        
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+        
+        function handleVisibilityChange() {
+            if (!document.hidden) {
+                loadAllData();
+                updateNotificationBadge();
+            }
+        }
+        
+        function handleLogout() {
+            if (state.notificationCheckInterval) {
+                clearInterval(state.notificationCheckInterval);
+            }
+            if (state.dataRefreshInterval) {
+                clearInterval(state.dataRefreshInterval);
+            }
+            
+            localStorage.removeItem('current_session');
+            window.location.href = 'index.html';
+        }
+        
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>

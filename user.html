@@ -1,0 +1,3624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>User - Complaints Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+
+        :root {
+            --primary-color: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary-color: #7209b7;
+            --accent-color: #f72585;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --card-bg: #ffffff;
+            --sidebar-bg: #ffffff;
+            --success-color: #4cc9f0;
+            --warning-color: #f8961e;
+            --danger-color: #f94144;
+            --user-color: #4361ee;
+            --admin-color: #7209b7;
+            --electrician-color: #f8961e;
+            --carpenter-color: #8b5cf6;
+            --plumber-color: #0ea5e9;
+            --it-color: #10b981;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 20px;
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+            --gradient-primary: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+            --gradient-secondary: linear-gradient(135deg, #7209b7 0%, #560bad 100%);
+            --safe-area-inset-top: env(safe-area-inset-top, 0px);
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-area-inset-left: env(safe-area-inset-left, 0px);
+            --safe-area-inset-right: env(safe-area-inset-right, 0px);
+        }
+
+        body.dark-theme {
+            --primary-color: #4cc9f0;
+            --primary-dark: #3ab4d8;
+            --secondary-color: #b5179e;
+            --accent-color: #f72585;
+            --light-color: #121212;
+            --dark-color: #e9ecef;
+            --card-bg: #1e1e1e;
+            --sidebar-bg: #1a1a1a;
+            --success-color: #4cc9f0;
+            --warning-color: #f8961e;
+            --danger-color: #f94144;
+            --user-color: #4cc9f0;
+            --admin-color: #b5179e;
+            --electrician-color: #fbbf24;
+            --carpenter-color: #a78bfa;
+            --plumber-color: #38bdf8;
+            --it-color: #34d399;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.4);
+            --gradient-primary: linear-gradient(135deg, #4cc9f0 0%, #3ab4d8 100%);
+            --gradient-secondary: linear-gradient(135deg, #b5179e 0%, #7209b7 100%);
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+            font-weight: 400;
+            line-height: 1.6;
+            -webkit-text-size-adjust: 100%;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .navbar {
+            padding-top: var(--safe-area-inset-top);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Top Navigation */
+        .navbar {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 64px;
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(10px);
+            background-color: rgba(67, 97, 238, 0.95);
+            padding-bottom: 8px;
+        }
+
+        .menu-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-fast);
+            backdrop-filter: blur(5px);
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .menu-btn:active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(0.95);
+        }
+
+        .navbar-title {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            padding: 0 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-left: 110px; /* leave space for logo */
+        }
+
+        .navbar-title i {
+            font-size: 22px;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-fast);
+            backdrop-filter: blur(5px);
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .notification-btn:active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(0.95);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--accent-color);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(67, 97, 238, 0.95);
+            animation: pulse 2s infinite;
+        }
+
+        /* Navbar logo (positioned to the right of the menu button) */
+        .navbar-logo {
+            position: absolute;
+            left: 72px; /* move right of the menu button to avoid overlap */
+            top: calc(var(--safe-area-inset-top) - 2px); /* nudged up 4px */
+            width: 96px; /* larger logo */
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            z-index: 1010;
+            pointer-events: none; /* allow clicks on the menu button */
+        }
+
+        @media (max-width: 768px) {
+            .navbar-title { margin-left: 92px; }
+            .navbar-logo { left: 60px; width: 80px; }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-logo {
+                width: 64px;
+                left: 60px;
+                top: calc(var(--safe-area-inset-top) - 4px); /* nudged up 4px */
+            }
+            .navbar-title { margin-left: 84px; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100vh;
+            background: var(--sidebar-bg);
+            transition: left var(--transition-normal) cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 9999;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            padding-top: var(--safe-area-inset-top);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9998;
+            backdrop-filter: blur(3px);
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+            animation: fadeIn var(--transition-fast);
+        }
+
+        .sidebar-header {
+            padding: 20px 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background: var(--gradient-primary);
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        body.dark-theme .sidebar-header {
+            border-bottom-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+            font-weight: 700;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .user-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            font-size: 13px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-menu {
+            padding: 8px;
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 18px 16px;
+            color: var(--dark-color);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            margin-bottom: 4px;
+            position: relative;
+            overflow: hidden;
+            min-height: 60px;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-theme .menu-item {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .menu-item:active {
+            background: rgba(67, 97, 238, 0.08);
+            transform: scale(0.98);
+        }
+
+        .menu-item.active {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: white;
+        }
+
+        .menu-item i {
+            font-size: 20px;
+            margin-right: 16px;
+            width: 24px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .menu-item span {
+            font-weight: 500;
+            font-size: 16px;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Main Content */
+        .main-content {
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 20px 16px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: calc(20px + var(--safe-area-inset-bottom));
+            background-color: var(--light-color);
+            transition: transform var(--transition-normal);
+        }
+
+        .sidebar.active ~ .main-content {
+            transform: translateX(80%);
+            pointer-events: none;
+        }
+
+        .page {
+            display: none;
+            animation: pageFadeIn 0.4s ease;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-title {
+            font-size: 28px;
+            margin-bottom: 24px;
+            color: var(--dark-color);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .dashboard-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        body.dark-theme .dashboard-card {
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .dashboard-card:active {
+            transform: scale(0.98);
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        body.dark-theme .card-title {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .card-icon {
+            font-size: 28px;
+            opacity: 0.9;
+            flex-shrink: 0;
+        }
+
+        .card-value {
+            font-size: 40px;
+            font-weight: 800;
+            color: var(--primary-color);
+            line-height: 1;
+            margin-bottom: 6px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-pending .card-value {
+            color: var(--warning-color);
+        }
+
+        .card-inprogress .card-value {
+            color: var(--primary-color);
+        }
+
+        .card-resolved .card-value {
+            color: var(--success-color);
+        }
+
+        .card-trend {
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .trend-up {
+            color: #10b981;
+        }
+
+        .trend-down {
+            color: #ef4444;
+        }
+
+        /* Forms */
+        .complaint-form {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            width: 100%;
+            overflow: hidden;
+        }
+
+        body.dark-theme .complaint-form {
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            position: relative;
+            width: 100%;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            transition: all var(--transition-fast);
+            background: var(--card-bg);
+            color: var(--dark-color);
+            -webkit-appearance: none;
+            appearance: none;
+            min-height: 52px;
+        }
+
+        body.dark-theme input, body.dark-theme select {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        /* Type Selector */
+        .type-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .type-btn {
+            padding: 16px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-md);
+            background: var(--card-bg);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            min-height: 100px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body.dark-theme .type-btn {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .type-btn:active {
+            transform: scale(0.95);
+        }
+
+        .type-btn.active {
+            border-color: transparent;
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .type-electrician.active {
+            background: linear-gradient(135deg, var(--electrician-color) 0%, #d97706 100%);
+        }
+
+        .type-carpenter.active {
+            background: linear-gradient(135deg, var(--carpenter-color) 0%, #7c3aed 100%);
+        }
+
+        .type-plumber.active {
+            background: linear-gradient(135deg, var(--plumber-color) 0%, #0284c7 100%);
+        }
+
+        .type-it.active {
+            background: linear-gradient(135deg, var(--it-color) 0%, #059669 100%);
+        }
+
+        .type-icon {
+            font-size: 24px;
+        }
+
+        .type-name {
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .form-full-row {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            resize: vertical;
+            min-height: 120px;
+            transition: all var(--transition-fast);
+            background: var(--card-bg);
+            color: var(--dark-color);
+            font-family: inherit;
+        }
+
+        body.dark-theme textarea {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .priority-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .priority-btn {
+            padding: 14px 8px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-sm);
+            background: var(--card-bg);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-height: 80px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body.dark-theme .priority-btn {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .priority-btn:active {
+            transform: scale(0.95);
+        }
+
+        .priority-btn.active {
+            border-color: transparent;
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .priority-low.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .priority-medium.active {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .priority-high.active {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .priority-icon {
+            font-size: 20px;
+        }
+
+        .submit-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 18px 32px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 28px auto 0;
+            min-width: 200px;
+            width: 100%;
+            letter-spacing: 0.5px;
+            box-shadow: var(--shadow-sm);
+            min-height: 56px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+            background: var(--primary-dark);
+        }
+
+        /* 相机拍照功能样式 */
+        .photo-section {
+            margin: 20px 0;
+        }
+
+        .photo-preview {
+            width: 100%;
+            max-height: 200px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            margin-bottom: 12px;
+            display: none;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .photo-preview.active {
+            display: block;
+        }
+
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-photo {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .photo-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .photo-btn {
+            flex: 1;
+            padding: 14px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-sm);
+            background: var(--card-bg);
+            color: var(--dark-color);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 56px;
+        }
+
+        body.dark-theme .photo-btn {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--dark-color);
+        }
+
+        .photo-btn:active {
+            transform: scale(0.95);
+        }
+
+        .photo-btn.take-photo {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+        }
+
+        .photo-btn.choose-photo {
+            background: var(--card-bg);
+        }
+
+        .photo-info {
+            font-size: 13px;
+            color: rgba(0, 0, 0, 0.5);
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        body.dark-theme .photo-info {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* 语言切换按钮样式 */
+        .language-switcher {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .language-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-fast);
+        }
+
+        .language-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .language-btn:active {
+            transform: scale(0.95);
+        }
+
+        .language-dropdown {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: var(--card-bg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            min-width: 150px;
+            display: none;
+            overflow: hidden;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .language-dropdown.active {
+            display: block;
+        }
+
+        .language-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            color: var(--dark-color);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-theme .language-option {
+            color: var(--dark-color);
+            border-bottom-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .language-option:last-child {
+            border-bottom: none;
+        }
+
+        .language-option:hover {
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .language-option.active {
+            background: rgba(67, 97, 238, 0.15);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Complaint List */
+        .complaint-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .complaint-item {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-normal);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        body.dark-theme .complaint-item {
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .complaint-item:active {
+            transform: scale(0.99);
+        }
+
+        .complaint-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+
+        .complaint-item.priority-low::before {
+            background: #10b981;
+        }
+
+        .complaint-item.priority-medium::before {
+            background: #f59e0b;
+        }
+
+        .complaint-item.priority-high::before {
+            background: #ef4444;
+        }
+
+        .complaint-header {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .complaint-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark-color);
+            line-height: 1.4;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .complaint-type {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            align-self: flex-start;
+        }
+
+        .type-electrician {
+            background: rgba(248, 150, 30, 0.1);
+            color: var(--electrician-color);
+        }
+
+        .type-carpenter {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--carpenter-color);
+        }
+
+        .type-plumber {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--plumber-color);
+        }
+
+        .type-IT {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--it-color);
+        }
+
+        .complaint-priority {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .priority-low {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .priority-medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .priority-high {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .complaint-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        body.dark-theme .complaint-info {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .complaint-info-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow: hidden;
+        }
+
+        .complaint-info-item span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .complaint-desc {
+            margin-bottom: 16px;
+            line-height: 1.5;
+            color: var(--dark-color);
+            opacity: 0.9;
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .complaint-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-theme .complaint-footer {
+            border-top-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .complaint-status {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            align-self: flex-start;
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .status-inprogress {
+            background: rgba(67, 97, 238, 0.1);
+            color: #4361ee;
+        }
+
+        .status-resolved {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .complaint-date {
+            font-size: 13px;
+            color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        body.dark-theme .complaint-date {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Settings */
+        .settings-section {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            width: 100%;
+        }
+
+        body.dark-theme .settings-section {
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .settings-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
+        .settings-title i {
+            color: var(--primary-color);
+            font-size: 20px;
+        }
+
+        .theme-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .theme-btn {
+            padding: 20px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-md);
+            background: var(--card-bg);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            min-height: 120px;
+        }
+
+        body.dark-theme .theme-btn {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-btn:active {
+            transform: scale(0.95);
+        }
+
+        .theme-btn.active {
+            border-color: var(--primary-color);
+            background: rgba(67, 97, 238, 0.05);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .theme-btn i {
+            font-size: 28px;
+        }
+
+        .theme-btn.active i {
+            color: var(--primary-color);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            min-height: 52px;
+        }
+
+        body.dark-theme .setting-item {
+            border-bottom-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 15px;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-right: 10px;
+        }
+
+        .setting-value {
+            color: rgba(0, 0, 0, 0.6);
+            flex-shrink: 0;
+        }
+
+        body.dark-theme .setting-value {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 16px;
+            color: rgba(0, 0, 0, 0.5);
+            width: 100%;
+        }
+
+        body.dark-theme .empty-state {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .empty-state i {
+            font-size: 56px;
+            margin-bottom: 20px;
+            color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-theme .empty-state i {
+            color: rgba(255, 255, 255, 0.1);
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: var(--dark-color);
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+            max-width: 300px;
+            margin: 0 auto;
+            line-height: 1.4;
+        }
+
+        /* Role Indicator */
+        .role-indicator {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 10px;
+            background: var(--gradient-primary);
+            color: white;
+            letter-spacing: 0.5px;
+            vertical-align: middle;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1100;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            backdrop-filter: blur(5px);
+            animation: modalFadeIn 0.3s ease;
+            padding-top: var(--safe-area-inset-top);
+            padding-bottom: var(--safe-area-inset-bottom);
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 400px;
+            max-height: 90vh;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center center;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: scale(0.9) translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 24px;
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .modal-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+            text-align: center;
+        }
+
+        .modal-body {
+            padding: 24px;
+            max-height: calc(90vh - 120px);
+            overflow-y: auto;
+        }
+
+        .modal-text {
+            margin-bottom: 24px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: var(--dark-color);
+            text-align: center;
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .modal-btn {
+            padding: 16px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            width: 100%;
+            min-height: 52px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .modal-btn-cancel {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--dark-color);
+        }
+
+        body.dark-theme .modal-btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .modal-btn-cancel:active {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-btn-confirm {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .modal-btn-confirm:active {
+            transform: scale(0.98);
+        }
+
+        /* Filters */
+        .filter-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            width: 100%;
+        }
+
+        body.dark-theme .filter-section {
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .filter-select, .search-bar {
+            padding: 14px 16px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-sm);
+            background: var(--card-bg);
+            font-size: 15px;
+            transition: all var(--transition-fast);
+            color: var(--dark-color);
+            width: 100%;
+            min-height: 52px;
+        }
+
+        body.dark-theme .filter-select, body.dark-theme .search-bar {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .filter-select:focus, .search-bar:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 16px;
+            left: 16px;
+            background: var(--card-bg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            padding: 16px;
+            z-index: 1200;
+            transform: translateY(-140%);
+            opacity: 0;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+            border-left: 4px solid var(--accent-color);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            max-width: 100%;
+            pointer-events: none;
+        }
+
+        body.dark-theme .notification {
+            background: var(--card-bg);
+        }
+
+        .notification.active {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .notification-icon {
+            font-size: 22px;
+            color: var(--accent-color);
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notification-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--dark-color);
+            font-size: 15px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .notification-text {
+            font-size: 13px;
+            color: rgba(0, 0, 0, 0.6);
+            line-height: 1.4;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        body.dark-theme .notification-text {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.2);
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(67, 97, 238, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Real-time Indicator */
+        .realtime-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+            white-space: nowrap;
+        }
+
+        .pulse {
+            width: 6px;
+            height: 6px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            .sidebar {
+                width: 300px;
+                left: -300px;
+            }
+            
+            .sidebar.active ~ .main-content {
+                transform: translateX(300px);
+            }
+            
+            .type-selector {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .priority-selector {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .complaint-info {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .complaint-header {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+            
+            .complaint-footer {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .form-row {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .form-group {
+                flex: 1;
+                min-width: 200px;
+            }
+            
+            .filter-section {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .filter-select {
+                flex: 1;
+                min-width: 150px;
+            }
+            
+            .search-bar {
+                flex: 2;
+            }
+            
+            .modal-actions {
+                flex-direction: row;
+            }
+            
+            .modal-btn {
+                width: auto;
+                flex: 1;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .navbar {
+                height: 72px;
+                padding: 0 24px;
+            }
+            
+            .main-content {
+                top: 72px;
+                padding: 24px;
+            }
+            
+            .page-title {
+                font-size: 32px;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 600px) {
+            .navbar {
+                height: 56px;
+            }
+            
+            .main-content {
+                top: 56px;
+                padding: 12px;
+            }
+            
+            .page-title {
+                font-size: 24px;
+                margin-bottom: 16px;
+            }
+            
+            .dashboard-card {
+                padding: 16px;
+            }
+            
+            .complaint-form,
+            .settings-section {
+                padding: 16px;
+            }
+            
+            .type-btn,
+            .priority-btn,
+            .theme-btn {
+                min-height: 80px;
+                padding: 12px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="navbar">
+        <button class="menu-btn" id="menuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="navbar-title" id="navbarTitle">
+            <i class="fas fa-home"></i>
+            <span data-translate="complaintDashboard">Complaint Dashboard</span>
+            <span class="realtime-indicator">
+                <span class="pulse"></span>
+                <span data-translate="live">Live</span>
+            </span>
+        </div>
+        <button class="notification-btn" id="notificationBtn">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge" id="notificationBadge">0</span>
+        </button>
+        <img src="logo.png" alt="Logo" class="navbar-logo">
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-details">
+                    <div class="user-name" id="userName">User Name</div>
+                    <div class="user-role" data-translate="userAccount">USER ACCOUNT</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-item active" data-page="dashboard">
+                <i class="fas fa-tachometer-alt"></i>
+                <span data-translate="dashboard">Dashboard</span>
+            </div>
+            <div class="menu-item" data-page="placeComplaint">
+                <i class="fas fa-plus-circle"></i>
+                <span data-translate="newComplaint">New Complaint</span>
+            </div>
+            <div class="menu-item" data-page="history">
+                <i class="fas fa-history"></i>
+                <span data-translate="complaintHistory">Complaint History</span>
+            </div>
+            <div class="menu-item" data-page="settings">
+                <i class="fas fa-cog"></i>
+                <span data-translate="settings">Settings</span>
+            </div>
+            <div class="menu-item" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span data-translate="logout">Logout</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Dashboard Page -->
+        <div class="page active" id="dashboardPage">
+            <h1 class="page-title" data-translate="myDashboard">My Dashboard <span class="role-indicator">USER</span></h1>
+            
+            <div class="dashboard-cards">
+                <div class="dashboard-card card-pending">
+                    <div class="card-header">
+                        <div class="card-title" data-translate="pendingComplaints">Pending Complaints</div>
+                        <i class="fas fa-clock card-icon"></i>
+                    </div>
+                    <div class="card-value" id="pendingCount">0</div>
+                    <div class="card-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span data-translate="updatedJustNow">Updated just now</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card card-inprogress">
+                    <div class="card-header">
+                        <div class="card-title" data-translate="inProgress">In Progress</div>
+                        <i class="fas fa-spinner card-icon"></i>
+                    </div>
+                    <div class="card-value" id="inProgressCount">0</div>
+                    <div class="card-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span data-translate="updatedJustNow">Updated just now</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card card-resolved">
+                    <div class="card-header">
+                        <div class="card-title" data-translate="resolved">Resolved</div>
+                        <i class="fas fa-check-circle card-icon"></i>
+                    </div>
+                    <div class="card-value" id="resolvedCount">0</div>
+                    <div class="card-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span data-translate="updatedJustNow">Updated just now</span>
+                    </div>
+                </div>
+            </div>
+            
+            <h2 class="page-title" data-translate="recentActivity">Recent Activity</h2>
+            <div class="complaint-list" id="dashboardComplaints">
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <h3 data-translate="noComplaintsYet">No complaints yet</h3>
+                    <p data-translate="submitFirstComplaint">Submit your first complaint to get started</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Place Complaint Page -->
+        <div class="page" id="placeComplaintPage">
+            <h1 class="page-title" data-translate="submitNewComplaint">Submit New Complaint <span class="role-indicator">USER</span></h1>
+            
+            <div class="complaint-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="complaintName"><i class="fas fa-user"></i> <span data-translate="yourName">Your Name</span></label>
+                        <input type="text" id="complaintName" name="complaintName" data-placeholder="enterYourName" placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="floorNumber"><i class="fas fa-building"></i> <span data-translate="floorNumber">Floor Number</span></label>
+                        <input type="number" id="floorNumber" name="floorNumber" min="1" max="50" data-placeholder="floorNumber" placeholder="Floor number" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="roomNumber"><i class="fas fa-door-closed"></i> <span data-translate="roomNumber">Room Number</span></label>
+                        <input type="number" id="roomNumber" name="roomNumber" min="1" max="999" data-placeholder="roomNumber" placeholder="Room number" required>
+                    </div>
+                </div>
+                
+                <div class="form-full-row">
+                    <label><i class="fas fa-tools"></i> <span data-translate="complaintType">Complaint Type</span></label>
+                    <div class="type-selector">
+                        <div class="type-btn type-electrician" data-type="electrician">
+                            <i class="fas fa-bolt type-icon"></i>
+                            <span class="type-name" data-translate="electrical">Electrical</span>
+                        </div>
+                        <div class="type-btn type-carpenter" data-type="carpenter">
+                            <i class="fas fa-hammer type-icon"></i>
+                            <span class="type-name" data-translate="carpentryFurniture">Carpentry/Furniture</span>
+                        </div>
+                        <div class="type-btn type-plumber" data-type="plumber">
+                            <i class="fas fa-faucet type-icon"></i>
+                            <span class="type-name" data-translate="plumbing">Plumbing</span>
+                        </div>
+                        <div class="type-btn type-it" data-type="IT">
+                            <i class="fas fa-laptop type-icon"></i>
+                            <span class="type-name" data-translate="itTechnical">IT/Technical</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 相机拍照功能 -->
+                <div class="form-full-row photo-section">
+                    <label><i class="fas fa-camera"></i> <span data-translate="addPhoto">Add Photo (Optional)</span></label>
+                    <div class="photo-preview" id="photoPreview">
+                        <button class="remove-photo" id="removePhotoBtn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <img id="previewImage" src="" alt="Preview">
+                    </div>
+                    <div class="photo-actions">
+                        <button class="photo-btn take-photo" id="takePhotoBtn">
+                            <i class="fas fa-camera"></i>
+                            <span data-translate="takePhoto">Take Photo</span>
+                        </button>
+                        <button class="photo-btn choose-photo" id="choosePhotoBtn">
+                            <i class="fas fa-images"></i>
+                            <span data-translate="chooseFromGallery">Choose from Gallery</span>
+                        </button>
+                    </div>
+                    <div class="photo-info" data-translate="photoInfo">
+                        Photo helps us understand the problem better. You can skip this step.
+                    </div>
+                </div>
+                
+                <div class="form-full-row">
+                    <label><i class="fas fa-exclamation-triangle"></i> <span data-translate="priorityLevel">Priority Level</span></label>
+                    <div class="priority-selector">
+                        <div class="priority-btn priority-low" data-priority="low">
+                            <i class="fas fa-check-circle priority-icon"></i>
+                            <span data-translate="lowPriority">Low Priority</span>
+                        </div>
+                        <div class="priority-btn priority-medium active" data-priority="medium">
+                            <i class="fas fa-exclamation-circle priority-icon"></i>
+                            <span data-translate="mediumPriority">Medium Priority</span>
+                        </div>
+                        <div class="priority-btn priority-high" data-priority="high">
+                            <i class="fas fa-exclamation-triangle priority-icon"></i>
+                            <span data-translate="highPriority">High Priority</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-full-row">
+                    <label for="complaintDetails"><i class="fas fa-file-alt"></i> <span data-translate="detailedDescription">Detailed Description</span></label>
+                    <textarea id="complaintDetails" name="complaintDetails" data-placeholder="describeProblem" placeholder="Describe the problem in detail. Be as specific as possible..." required></textarea>
+                </div>
+                
+                <button class="submit-btn" id="submitComplaintBtn">
+                    <i class="fas fa-paper-plane"></i>
+                    <span data-translate="submitComplaint">Submit Complaint</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- History Page -->
+        <div class="page" id="historyPage">
+            <h1 class="page-title" data-translate="complaintHistory">Complaint History <span class="role-indicator">USER</span></h1>
+            
+            <div class="filter-section">
+                <select class="filter-select" id="historyFilter">
+                    <option value="all" data-translate="allComplaints">All Complaints</option>
+                    <option value="pending" data-translate="pending">Pending</option>
+                    <option value="inprogress" data-translate="inProgress">In Progress</option>
+                    <option value="resolved" data-translate="resolved">Resolved</option>
+                </select>
+                
+                <select class="filter-select" id="historyTypeFilter">
+                    <option value="all" data-translate="allTypes">All Types</option>
+                    <option value="electrician" data-translate="electrical">Electrical</option>
+                    <option value="carpenter" data-translate="carpentry">Carpentry</option>
+                    <option value="plumber" data-translate="plumbing">Plumbing</option>
+                    <option value="IT" data-translate="itTechnical">IT</option>
+                </select>
+                
+                <select class="filter-select" id="historySort">
+                    <option value="newest" data-translate="newestFirst">Newest First</option>
+                    <option value="oldest" data-translate="oldestFirst">Oldest First</option>
+                </select>
+                
+                <input type="text" class="search-bar" id="historySearch" data-placeholder="searchComplaints" placeholder="Search complaints...">
+            </div>
+            
+            <div class="complaint-list" id="historyComplaints">
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <h3 data-translate="noComplaintsFound">No complaints found</h3>
+                    <p data-translate="tryAdjustingFilters">Try adjusting your filters or submit a new complaint</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div class="page" id="settingsPage">
+            <h1 class="page-title" data-translate="settings">Settings <span class="role-indicator">USER</span></h1>
+            
+            <div class="settings-section">
+                <h2 class="settings-title">
+                    <i class="fas fa-palette"></i>
+                    <span data-translate="themeSettings">Theme Settings</span>
+                </h2>
+                <div class="theme-selector">
+                    <div class="theme-btn" data-theme="light">
+                        <i class="fas fa-sun"></i>
+                        <div data-translate="lightTheme">Light Theme</div>
+                        <small data-translate="cleanBright">Clean and bright interface</small>
+                    </div>
+                    <div class="theme-btn active" data-theme="dark">
+                        <i class="fas fa-moon"></i>
+                        <div data-translate="darkTheme">Dark Theme</div>
+                        <small data-translate="easyEyes">Easy on the eyes</small>
+                    </div>
+                </div>
+                
+                <h2 class="settings-title">
+                    <i class="fas fa-sliders-h"></i>
+                    <span data-translate="preferences">Preferences</span>
+                </h2>
+                
+                <div class="setting-item">
+                    <div class="setting-label" data-translate="appVersion">App Version</div>
+                    <div class="setting-value">v2.1.0</div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-label" data-translate="historyDuration">History Duration</div>
+                    <div class="setting-value">
+                        <select id="historyDuration">
+                            <option value="7" data-translate="days7">7 days</option>
+                            <option value="30" selected data-translate="days30">30 days</option>
+                            <option value="90" data-translate="days90">90 days</option>
+                            <option value="365" data-translate="year1">1 year</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-label" data-translate="pushNotifications">Push Notifications</div>
+                    <div class="setting-value">
+                        <label class="switch">
+                            <input type="checkbox" id="notificationsToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-label" data-translate="soundEffects">Sound Effects</div>
+                    <div class="setting-value">
+                        <label class="switch">
+                            <input type="checkbox" id="soundToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 语言切换按钮 -->
+    <div class="language-switcher">
+        <div class="language-dropdown" id="languageDropdown">
+            <div class="language-option active" data-lang="en">
+                <i class="fas fa-globe"></i>
+                <span data-translate="english">English</span>
+            </div>
+            <div class="language-option" data-lang="hi">
+                <i class="fas fa-language"></i>
+                <span data-translate="hindi">हिंदी (Hindi)</span>
+            </div>
+            <div class="language-option" data-lang="mr">
+                <i class="fas fa-language"></i>
+                <span data-translate="marathi">मराठी (Marathi)</span>
+            </div>
+        </div>
+        <button class="language-btn" id="languageBtn">
+            <i class="fas fa-globe-americas"></i>
+        </button>
+    </div>
+
+    <!-- Modal for Confirmation -->
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-translate="confirmAction">Confirm Action</h2>
+            </div>
+            <div class="modal-body">
+                <p class="modal-text" id="modalText">Are you sure you want to submit this complaint?</p>
+                <div class="modal-actions">
+                    <button class="modal-btn modal-btn-cancel" id="modalCancel" data-translate="cancel">Cancel</button>
+                    <button class="modal-btn modal-btn-confirm" id="modalConfirm" data-translate="confirm">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <div class="notification-icon">
+            <i class="fas fa-bell"></i>
+        </div>
+        <div class="notification-content">
+            <div class="notification-title" id="notificationTitle">New Complaint</div>
+            <div class="notification-text" id="notificationText">A user has submitted a new complaint</div>
+        </div>
+    </div>
+
+    <!-- 隐藏的相机输入 -->
+    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+    <input type="file" id="galleryInput" accept="image/*" style="display: none;">
+
+    <script>
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://ykdukxfuyvucavcezftf.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_4ugDmOCauI0FLil-BPeh1g_3AhbHSzq';
+        const SUPABASE_BUCKET = 'Photos'; // 你的存储桶名称
+
+        // Initialize Supabase
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // 翻译文本
+        const translations = {
+            en: {
+                // 导航
+                complaintDashboard: "seven 11",
+                dashboard: "Dashboard",
+                newComplaint: "New Complaint",
+                complaintHistory: "Complaint History",
+                settings: "Settings",
+                logout: "Logout",
+                userAccount: "USER ACCOUNT",
+                live: "Live",
+                
+                // 仪表板
+                myDashboard: "My Dashboard",
+                pendingComplaints: "Pending Complaints",
+                inProgress: "In Progress",
+                resolved: "Resolved",
+                updatedJustNow: "Updated just now",
+                recentActivity: "Recent Activity",
+                noComplaintsYet: "No complaints yet",
+                submitFirstComplaint: "Submit your first complaint to get started",
+                
+                // 提交投诉
+                submitNewComplaint: "Submit New Complaint",
+                yourName: "Your Name",
+                floorNumber: "Floor Number",
+                roomNumber: "Room Number",
+                complaintType: "Complaint Type",
+                electrical: "Electrical",
+                carpentryFurniture: "Carpentry/Furniture",
+                plumbing: "Plumbing",
+                itTechnical: "IT/Technical",
+                addPhoto: "Add Photo (Optional)",
+                takePhoto: "Take Photo",
+                chooseFromGallery: "Choose from Gallery",
+                photoInfo: "Photo helps us understand the problem better. You can skip this step.",
+                priorityLevel: "Priority Level",
+                lowPriority: "Low Priority",
+                mediumPriority: "Medium Priority",
+                highPriority: "High Priority",
+                detailedDescription: "Detailed Description",
+                submitComplaint: "Submit Complaint",
+                
+                // 历史
+                allComplaints: "All Complaints",
+                allTypes: "All Types",
+                carpentry: "Carpentry",
+                newestFirst: "Newest First",
+                oldestFirst: "Oldest First",
+                noComplaintsFound: "No complaints found",
+                tryAdjustingFilters: "Try adjusting your filters or submit a new complaint",
+                
+                // 设置
+                themeSettings: "Theme Settings",
+                lightTheme: "Light Theme",
+                cleanBright: "Clean and bright interface",
+                darkTheme: "Dark Theme",
+                easyEyes: "Easy on the eyes",
+                preferences: "Preferences",
+                appVersion: "App Version",
+                historyDuration: "History Duration",
+                days7: "7 days",
+                days30: "30 days",
+                days90: "90 days",
+                year1: "1 year",
+                pushNotifications: "Push Notifications",
+                soundEffects: "Sound Effects",
+                
+                // 模态框
+                confirmAction: "Confirm Action",
+                cancel: "Cancel",
+                confirm: "Confirm",
+                
+                // 占位符
+                enterYourName: "Enter your full name",
+                floorNumberPlaceholder: "Floor number",
+                roomNumberPlaceholder: "Room number",
+                describeProblem: "Describe the problem in detail. Be as specific as possible...",
+                searchComplaints: "Search complaints...",
+                
+                // 语言
+                english: "English",
+                hindi: "हिंदी (Hindi)",
+                marathi: "मराठी (Marathi)",
+                
+                // 通知
+                welcomeBack: "Welcome Back",
+                loggedOut: "Logged Out",
+                validationError: "Validation Error",
+                pleaseEnterName: "Please enter your name",
+                pleaseEnterFloor: "Please enter a valid floor number",
+                pleaseEnterRoom: "Please enter a valid room number",
+                pleaseSelectType: "Please select complaint type",
+                pleaseDescribe: "Please describe the problem",
+                success: "Success!",
+                complaintSubmitted: "Your complaint has been submitted successfully!",
+                error: "Error",
+                failedSubmit: "Failed to submit complaint. Please try again.",
+                settingsUpdated: "Settings Updated",
+                historyDurationSaved: "History duration preference saved",
+                notificationsEnabled: "Notifications enabled",
+                notificationsDisabled: "Notifications disabled",
+                soundEnabled: "Sound effects enabled",
+                soundDisabled: "Sound effects disabled",
+                cameraPermissionRequired: "Camera permission required",
+                allowCamera: "Please allow camera access to take photos",
+                photoUploading: "Uploading photo...",
+                photoUploaded: "Photo uploaded successfully",
+                photoUploadFailed: "Failed to upload photo",
+                noPhotoSelected: "No photo selected",
+                cameraNotSupported: "Camera not supported on this device"
+            },
+            hi: {
+                // 导航
+                complaintDashboard: "seven 11",
+                dashboard: "डैशबोर्ड",
+                newComplaint: "नई शिकायत",
+                complaintHistory: "शिकायत इतिहास",
+                settings: "सेटिंग्स",
+                logout: "लॉगआउट",
+                userAccount: "उपयोगकर्ता खाता",
+                live: "लाइव",
+                
+                // 仪表板
+                myDashboard: "मेरा डैशबोर्ड",
+                pendingComplaints: "लंबित शिकायतें",
+                inProgress: "प्रगति में",
+                resolved: "हल किया गया",
+                updatedJustNow: "अभी अपडेट किया गया",
+                recentActivity: "हालिया गतिविधि",
+                noComplaintsYet: "अभी तक कोई शिकायत नहीं",
+                submitFirstComplaint: "शुरू करने के लिए अपनी पहली शिकायत दर्ज करें",
+                
+                // 提交投诉
+                submitNewComplaint: "नई शिकायत दर्ज करें",
+                yourName: "आपका नाम",
+                floorNumber: "फर्श संख्या",
+                roomNumber: "कमरा संख्या",
+                complaintType: "शिकायत प्रकार",
+                electrical: "बिजली",
+                carpentryFurniture: "बढ़ईगीरी/फर्नीचर",
+                plumbing: "प्लंबिंग",
+                itTechnical: "आईटी/तकनीकी",
+                addPhoto: "फोटो जोड़ें (वैकल्पिक)",
+                takePhoto: "फोटो लें",
+                chooseFromGallery: "गैलरी से चुनें",
+                photoInfo: "फोटो समस्या को बेहतर समझने में मदद करता है। आप इस चरण को छोड़ सकते हैं।",
+                priorityLevel: "प्राथमिकता स्तर",
+                lowPriority: "कम प्राथमिकता",
+                mediumPriority: "मध्यम प्राथमिकता",
+                highPriority: "उच्च प्राथमिकता",
+                detailedDescription: "विस्तृत विवरण",
+                submitComplaint: "शिकायत दर्ज करें",
+                
+                // 历史
+                allComplaints: "सभी शिकायतें",
+                allTypes: "सभी प्रकार",
+                carpentry: "बढ़ईगीरी",
+                newestFirst: "नवीनतम पहले",
+                oldestFirst: "सबसे पुराना पहले",
+                noComplaintsFound: "कोई शिकायत नहीं मिली",
+                tryAdjustingFilters: "अपने फ़िल्टर समायोजित करें या एक नई शिकायत दर्ज करें",
+                
+                // 设置
+                themeSettings: "थीम सेटिंग्स",
+                lightTheme: "लाइट थीम",
+                cleanBright: "साफ और चमकदार इंटरफेस",
+                darkTheme: "डार्क थीम",
+                easyEyes: "आंखों के लिए आरामदायक",
+                preferences: "प्राथमिकताएं",
+                appVersion: "ऐप संस्करण",
+                historyDuration: "इतिहास अवधि",
+                days7: "7 दिन",
+                days30: "30 दिन",
+                days90: "90 दिन",
+                year1: "1 वर्ष",
+                pushNotifications: "पुश सूचनाएं",
+                soundEffects: "ध्वनि प्रभाव",
+                
+                // 模态框
+                confirmAction: "कार्रवाई की पुष्टि करें",
+                cancel: "रद्द करें",
+                confirm: "पुष्टि करें",
+                
+                // 占位符
+                enterYourName: "अपना पूरा नाम दर्ज करें",
+                floorNumberPlaceholder: "फर्श संख्या",
+                roomNumberPlaceholder: "कमरा संख्या",
+                describeProblem: "समस्या का विस्तार से वर्णन करें। जितना संभव हो विशिष्ट रहें...",
+                searchComplaints: "शिकायतें खोजें...",
+                
+                // 语言
+                english: "अंग्रेजी",
+                hindi: "हिंदी",
+                marathi: "मराठी",
+                
+                // 通知
+                welcomeBack: "वापसी पर स्वागत है",
+                loggedOut: "लॉग आउट कर दिया गया",
+                validationError: "सत्यापन त्रुटि",
+                pleaseEnterName: "कृपया अपना नाम दर्ज करें",
+                pleaseEnterFloor: "कृपया एक वैध फर्श संख्या दर्ज करें",
+                pleaseEnterRoom: "कृपया एक वैध कमरा संख्या दर्ज करें",
+                pleaseSelectType: "कृपया शिकायत प्रकार चुनें",
+                pleaseDescribe: "कृपया समस्या का वर्णन करें",
+                success: "सफलता!",
+                complaintSubmitted: "आपकी शिकायत सफलतापूर्वक दर्ज कर दी गई है!",
+                error: "त्रुटि",
+                failedSubmit: "शिकायत दर्ज करने में विफल। कृपया पुनः प्रयास करें।",
+                settingsUpdated: "सेटिंग्स अपडेट की गई",
+                historyDurationSaved: "इतिहास अवधि प्राथमिकता सहेजी गई",
+                notificationsEnabled: "सूचनाएं सक्षम की गई",
+                notificationsDisabled: "सूचनाएं अक्षम की गई",
+                soundEnabled: "ध्वनि प्रभाव सक्षम किए गए",
+                soundDisabled: "ध्वनि प्रभाव अक्षम किए गए",
+                cameraPermissionRequired: "कैमरा अनुमति आवश्यक",
+                allowCamera: "कृपया फोटो लेने के लिए कैमरा एक्सेस की अनुमति दें",
+                photoUploading: "फोटो अपलोड हो रहा है...",
+                photoUploaded: "फोटो सफलतापूर्वक अपलोड हो गया",
+                photoUploadFailed: "फोटो अपलोड करने में विफल",
+                noPhotoSelected: "कोई फोटो चयनित नहीं",
+                cameraNotSupported: "इस डिवाइस पर कैमरा समर्थित नहीं है"
+            },
+            mr: {
+                // 导航
+                complaintDashboard: "seven 11",
+                dashboard: "डॅशबोर्ड",
+                newComplaint: "नवीन तक्रार",
+                complaintHistory: "तक्रार इतिहास",
+                settings: "सेटिंग्ज",
+                logout: "लॉगआउट",
+                userAccount: "वापरकर्ता खाते",
+                live: "लाइव्ह",
+                
+                // 仪表板
+                myDashboard: "माझे डॅशबोर्ड",
+                pendingComplaints: "प्रलंबित तक्रारी",
+                inProgress: "प्रगतीपथावर",
+                resolved: "सोडवलेले",
+                updatedJustNow: "नुकतेच अपडेट केले",
+                recentActivity: "अलीकडील क्रियाकलाप",
+                noComplaintsYet: "अद्याप कोणतीही तक्रार नाही",
+                submitFirstComplaint: "सुरुवात करण्यासाठी आपली पहिली तक्रार सादर करा",
+                
+                // 提交投诉
+                submitNewComplaint: "नवीन तक्रार सादर करा",
+                yourName: "आपले नाव",
+                floorNumber: "मजला क्रमांक",
+                roomNumber: "खोली क्रमांक",
+                complaintType: "तक्रार प्रकार",
+                electrical: "विद्युत",
+                carpentryFurniture: "सुतारकाम/फर्निचर",
+                plumbing: "नळसेवा",
+                itTechnical: "आयटी/तांत्रिक",
+                addPhoto: "फोटो जोडा (पर्यायी)",
+                takePhoto: "फोटो काढा",
+                chooseFromGallery: "गॅलरीमधून निवडा",
+                photoInfo: "फोटो समस्येचे चांगले आकलन करण्यास मदत करते. आपण ही पायरी वगळू शकता.",
+                priorityLevel: "प्राधान्य स्तर",
+                lowPriority: "कमी प्राधान्य",
+                mediumPriority: "मध्यम प्राधान्य",
+                highPriority: "उच्च प्राधान्य",
+                detailedDescription: "तपशीलवार वर्णन",
+                submitComplaint: "तक्रार सादर करा",
+                
+                // 历史
+                allComplaints: "सर्व तक्रारी",
+                allTypes: "सर्व प्रकार",
+                carpentry: "सुतारकाम",
+                newestFirst: "नवीनतम प्रथम",
+                oldestFirst: "जुने प्रथम",
+                noComplaintsFound: "कोणतीही तक्रार सापडली नाही",
+                tryAdjustingFilters: "आपले फिल्टर समायोजित करा किंवा नवीन तक्रार सादर करा",
+                
+                // 设置
+                themeSettings: "थीम सेटिंग्ज",
+                lightTheme: "प्रकाश थीम",
+                cleanBright: "स्वच्छ आणि तेजस्वी इंटरफेस",
+                darkTheme: "गडद थीम",
+                easyEyes: "डोळ्यांसाठी आरामदायक",
+                preferences: "प्राधान्ये",
+                appVersion: "ॲप आवृत्ती",
+                historyDuration: "इतिहास कालावधी",
+                days7: "७ दिवस",
+                days30: "३० दिवस",
+                days90: "९० दिवस",
+                year1: "१ वर्ष",
+                pushNotifications: "पुश नोटिफिकेशन्स",
+                soundEffects: "ध्वनी प्रभाव",
+                
+                // 模态框
+                confirmAction: "कृतीची पुष्टी करा",
+                cancel: "रद्द करा",
+                confirm: "पुष्टी करा",
+                
+                // 占位符
+                enterYourName: "आपले पूर्ण नाव प्रविष्ट करा",
+                floorNumberPlaceholder: "मजला क्रमांक",
+                roomNumberPlaceholder: "खोली क्रमांक",
+                describeProblem: "समस्येचे तपशीलवार वर्णन करा. शक्य तितके विशिष्ट रहा...",
+                searchComplaints: "तक्रारी शोधा...",
+                
+                // 语言
+                english: "इंग्रजी",
+                hindi: "हिंदी",
+                marathi: "मराठी",
+                
+                // 通知
+                welcomeBack: "परत येण्याबद्दल स्वागत आहे",
+                loggedOut: "लॉग आउट केले",
+                validationError: "प्रमाणन त्रुटी",
+                pleaseEnterName: "कृपया आपले नाव प्रविष्ट करा",
+                pleaseEnterFloor: "कृपया वैध मजला क्रमांक प्रविष्ट करा",
+                pleaseEnterRoom: "कृपया वैध खोली क्रमांक प्रविष्ट करा",
+                pleaseSelectType: "कृपया तक्रार प्रकार निवडा",
+                pleaseDescribe: "कृपया समस्येचे वर्णन करा",
+                success: "यश!",
+                complaintSubmitted: "आपली तक्रार यशस्वीरित्या सादर केली गेली आहे!",
+                error: "त्रुटी",
+                failedSubmit: "तक्रार सादर करण्यात अयशस्वी. कृपया पुन्हा प्रयत्न करा.",
+                settingsUpdated: "सेटिंग्ज अपडेट केल्या",
+                historyDurationSaved: "इतिहास कालावधी प्राधान्य जतन केले",
+                notificationsEnabled: "नोटिफिकेशन्स सक्षम केली",
+                notificationsDisabled: "नोटिफिकेशन्स अक्षम केली",
+                soundEnabled: "ध्वनी प्रभाव सक्षम केले",
+                soundDisabled: "ध्वनी प्रभाव अक्षम केले",
+                cameraPermissionRequired: "कॅमेरा परवानगी आवश्यक",
+                allowCamera: "कृपया फोटो काढण्यासाठी कॅमेरा प्रवेशाची परवानगी द्या",
+                photoUploading: "फोटो अपलोड होत आहे...",
+                photoUploaded: "फोटो यशस्वीरित्या अपलोड केला",
+                photoUploadFailed: "फोटो अपलोड करण्यात अयशस्वी",
+                noPhotoSelected: "कोणताही फोटो निवडलेला नाही",
+                cameraNotSupported: "या उपकरणावर कॅमेरा समर्थित नाही"
+            }
+        };
+
+        // Fast database operations
+        class FastDatabase {
+            constructor() {
+                // Use the initialized Supabase client if available
+                if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                    this.supabase = supabaseClient;
+                } else if (window.supabase && typeof window.supabase.createClient === 'function') {
+                    // Fallback: create a new client using globals
+                    this.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                } else {
+                    this.supabase = null;
+                }
+
+                this.batchOperations = [];
+                this.batchTimeout = null;
+                this.realtimeChannel = null;
+            }
+
+            async addComplaint(complaint) {
+                try {
+                    const startTime = performance.now();
+                    
+                    const optimizedComplaint = {
+                        ...complaint,
+                        date: new Date().toISOString(),
+                        updated: new Date().toISOString(),
+                        status: 'pending',
+                        status_priority: `${complaint.status}_${complaint.priority}`,
+                        type_priority: `${complaint.type}_${complaint.priority}`
+                    };
+
+                    const { data, error } = await this.supabase
+                        .from('complaints')
+                        .upsert([optimizedComplaint], {
+                            onConflict: 'id',
+                            ignoreDuplicates: false
+                        })
+                        .select()
+                        .single();
+
+                    if (error) throw error;
+                    
+                    const endTime = performance.now();
+                    console.log(`Complaint added in ${(endTime - startTime).toFixed(2)}ms`);
+                    
+                    return { success: true, data };
+
+                } catch (error) {
+                    console.error('Add complaint error:', error);
+                    return { success: false, error: error.message };
+                }
+            }
+
+            async getUserComplaints(userId) {
+                try {
+                    const cacheKey = `complaints_${userId}`;
+                    const cached = localStorage.getItem(cacheKey);
+                    
+                    if (cached) {
+                        const data = JSON.parse(cached);
+                        const cacheTime = data.timestamp;
+                        const now = Date.now();
+                        
+                        if (now - cacheTime < 5000) {
+                            return { success: true, data: data.complaints, fromCache: true };
+                        }
+                    }
+
+                    const { data, error } = await this.supabase
+                        .from('complaints')
+                        .select('id, type, floor, room, priority, status, description, date, updated, user_name')
+                        .eq('user_id', userId)
+                        .order('date', { ascending: false })
+                        .limit(100);
+
+                    if (error) throw error;
+
+                    if (data) {
+                        localStorage.setItem(cacheKey, JSON.stringify({
+                            complaints: data,
+                            timestamp: Date.now()
+                        }));
+                    }
+
+                    return { success: true, data, fromCache: false };
+                } catch (error) {
+                    console.error('Get user complaints error:', error);
+                    return { success: false, error: error.message };
+                }
+            }
+
+            // 上传照片到Supabase存储
+            async uploadPhoto(file, userId) {
+                try {
+                    const fileName = `${userId}_${Date.now()}_${file.name}`;
+                    const { data, error } = await this.supabase.storage
+                        .from(SUPABASE_BUCKET)
+                        .upload(fileName, file, {
+                            cacheControl: '3600',
+                            upsert: false
+                        });
+
+                    if (error) throw error;
+
+                    // 获取公开URL
+                    const { data: urlData } = this.supabase.storage
+                        .from(SUPABASE_BUCKET)
+                        .getPublicUrl(fileName);
+
+                    return { 
+                        success: true, 
+                        fileName: fileName,
+                        url: urlData.publicUrl 
+                    };
+                } catch (error) {
+                    console.error('Upload photo error:', error);
+                    return { success: false, error: error.message };
+                }
+            }
+
+            // 从Supabase存储删除照片
+            async deletePhoto(fileName) {
+                try {
+                    const { error } = await this.supabase.storage
+                        .from(SUPABASE_BUCKET)
+                        .remove([fileName]);
+
+                    if (error) throw error;
+                    return { success: true };
+                } catch (error) {
+                    console.error('Delete photo error:', error);
+                    return { success: false, error: error.message };
+                }
+            }
+
+            startRealtime(userId, callback) {
+                if (this.realtimeChannel) {
+                    this.realtimeChannel.unsubscribe();
+                }
+
+                this.realtimeChannel = this.supabase
+                    .channel(`complaints:user=${userId}`)
+                    .on(
+                        'postgres_changes',
+                        {
+                            event: '*',
+                            schema: 'public',
+                            table: 'complaints',
+                            filter: `user_id=eq.${userId}`
+                        },
+                        async (payload) => {
+                            localStorage.removeItem(`complaints_${userId}`);
+                            
+                            if (callback) {
+                                callback(payload);
+                            }
+                        }
+                    )
+                    .subscribe();
+
+                return this.realtimeChannel;
+            }
+
+            stopRealtime() {
+                if (this.realtimeChannel) {
+                    this.supabase.removeChannel(this.realtimeChannel);
+                    this.realtimeChannel = null;
+                }
+            }
+        }
+
+        // Application State
+        const state = {
+            currentUser: null,
+            db: new FastDatabase(),
+            currentPage: 'dashboard',
+            lastUpdate: Date.now(),
+            updateInterval: null,
+            notificationCheckInterval: null,
+            soundEnabled: true,
+            notificationsEnabled: true,
+            realtimeConnected: false,
+            complaintCache: new Map(),
+            currentLanguage: localStorage.getItem('app_language') || 'en',
+            selectedPhoto: null,
+            photoFile: null
+        };
+
+        // DOM Elements
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const menuItems = document.querySelectorAll('.menu-item');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const navbarTitle = document.getElementById('navbarTitle');
+        const notificationBtn = document.getElementById('notificationBtn');
+        const notificationBadge = document.getElementById('notificationBadge');
+        const pages = document.querySelectorAll('.page');
+        
+        // Dashboard elements
+        const pendingCount = document.getElementById('pendingCount');
+        const inProgressCount = document.getElementById('inProgressCount');
+        const resolvedCount = document.getElementById('resolvedCount');
+        const dashboardComplaints = document.getElementById('dashboardComplaints');
+        
+        // Place complaint elements
+        const typeBtns = document.querySelectorAll('.type-btn');
+        const priorityBtns = document.querySelectorAll('.priority-btn');
+        const submitComplaintBtn = document.getElementById('submitComplaintBtn');
+        const complaintName = document.getElementById('complaintName');
+        const floorNumber = document.getElementById('floorNumber');
+        const roomNumber = document.getElementById('roomNumber');
+        const complaintDetails = document.getElementById('complaintDetails');
+        
+        // Photo elements
+        const photoPreview = document.getElementById('photoPreview');
+        const previewImage = document.getElementById('previewImage');
+        const takePhotoBtn = document.getElementById('takePhotoBtn');
+        const choosePhotoBtn = document.getElementById('choosePhotoBtn');
+        const removePhotoBtn = document.getElementById('removePhotoBtn');
+        const cameraInput = document.getElementById('cameraInput');
+        const galleryInput = document.getElementById('galleryInput');
+        
+        // Language elements
+        const languageBtn = document.getElementById('languageBtn');
+        const languageDropdown = document.getElementById('languageDropdown');
+        const languageOptions = document.querySelectorAll('.language-option');
+        
+        // History elements
+        const historyComplaints = document.getElementById('historyComplaints');
+        const historyFilter = document.getElementById('historyFilter');
+        const historyTypeFilter = document.getElementById('historyTypeFilter');
+        const historySort = document.getElementById('historySort');
+        const historySearch = document.getElementById('historySearch');
+        
+        // Settings elements
+        const themeBtns = document.querySelectorAll('.theme-btn');
+        const historyDuration = document.getElementById('historyDuration');
+        const notificationsToggle = document.getElementById('notificationsToggle');
+        const soundToggle = document.getElementById('soundToggle');
+        
+        // Modal elements
+        const confirmationModal = document.getElementById('confirmationModal');
+        const modalText = document.getElementById('modalText');
+        const modalCancel = document.getElementById('modalCancel');
+        const modalConfirm = document.getElementById('modalConfirm');
+        
+        // Notification elements
+        const notification = document.getElementById('notification');
+        const notificationTitle = document.getElementById('notificationTitle');
+        const notificationText = document.getElementById('notificationText');
+
+        // Initialize the app
+        async function initApp() {
+            const sessionData = checkSession();
+            if (!sessionData) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            state.currentUser = sessionData;
+
+            await Promise.all([
+                loadUserData(),
+                loadPreferences()
+            ]);
+
+            setupEventListeners();
+            initRealtimeUpdates();
+            startUpdateInterval();
+
+            // 应用保存的语言
+            applyLanguage(state.currentLanguage);
+
+            setTimeout(() => {
+                showNotification(translateText('welcomeBack'), `${translateText('welcomeBack')}, ${state.currentUser.name}!`);
+            }, 1000);
+        }
+
+        // 翻译函数
+        function translateText(key) {
+            return translations[state.currentLanguage][key] || translations['en'][key] || key;
+        }
+
+        function applyLanguage(lang) {
+            state.currentLanguage = lang;
+            localStorage.setItem('app_language', lang);
+            
+            // 更新活跃语言选项
+            languageOptions.forEach(option => {
+                if (option.getAttribute('data-lang') === lang) {
+                    option.classList.add('active');
+                } else {
+                    option.classList.remove('active');
+                }
+            });
+            
+            // 更新所有带data-translate属性的元素
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                        element.setAttribute('placeholder', translations[lang][key]);
+                    } else {
+                        element.textContent = translations[lang][key];
+                    }
+                }
+            });
+            
+            // 更新选择框选项
+            document.querySelectorAll('option[data-translate]').forEach(option => {
+                const key = option.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    option.textContent = translations[lang][key];
+                }
+            });
+            
+            // 更新占位符
+            document.querySelectorAll('[data-placeholder]').forEach(input => {
+                const key = input.getAttribute('data-placeholder');
+                if (translations[lang] && translations[lang][key]) {
+                    input.setAttribute('placeholder', translations[lang][key]);
+                }
+            });
+        }
+
+        function checkSession() {
+            const sessionData = JSON.parse(localStorage.getItem('current_session'));
+            
+            if (!sessionData) {
+                console.log('No session found');
+                return null;
+            }
+
+            if (sessionData.isAdmin) {
+                console.log('Admin session detected');
+                localStorage.removeItem('current_session');
+                return null;
+            }
+
+            return sessionData;
+        }
+
+        async function loadUserData() {
+            const firstLetter = state.currentUser.name.charAt(0).toUpperCase();
+            userAvatar.textContent = firstLetter;
+            userName.textContent = state.currentUser.name;
+            complaintName.value = state.currentUser.name;
+            
+            updateDashboard();
+        }
+
+        function loadPreferences() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            changeTheme(savedTheme);
+            
+            themeBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-theme') === savedTheme) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const savedDuration = localStorage.getItem('historyDuration') || '30';
+            historyDuration.value = savedDuration;
+
+            const savedNotifications = localStorage.getItem('notifications') !== 'false';
+            notificationsToggle.checked = savedNotifications;
+            state.notificationsEnabled = savedNotifications;
+
+            const savedSound = localStorage.getItem('sound') !== 'false';
+            soundToggle.checked = savedSound;
+            state.soundEnabled = savedSound;
+        }
+
+        function setupEventListeners() {
+            // Menu toggle
+            menuBtn.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+            
+            // Menu items navigation
+            menuItems.forEach(item => {
+                if (item.id !== 'logoutBtn') {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const page = item.getAttribute('data-page');
+                        navigateToPage(page);
+                        toggleSidebar();
+                    });
+                }
+            });
+            
+            // Logout
+            logoutBtn.addEventListener('click', handleLogout);
+            
+            // Type buttons
+            typeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    typeBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+            
+            // Priority buttons
+            priorityBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    priorityBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+            
+            // Photo buttons - FIXED: 确保"Take Photo"按钮触发相机
+            takePhotoBtn.addEventListener('click', () => {
+                // 直接触发相机输入
+                cameraInput.click();
+            });
+            
+            // "Choose from Gallery"按钮触发文件选择
+            choosePhotoBtn.addEventListener('click', () => {
+                galleryInput.click();
+            });
+            
+            removePhotoBtn.addEventListener('click', removePhoto);
+            
+            // 相机和相册输入事件监听
+            cameraInput.addEventListener('change', handlePhotoInput);
+            galleryInput.addEventListener('change', handlePhotoInput);
+            
+            // Language toggle
+            languageBtn.addEventListener('click', () => {
+                languageDropdown.classList.toggle('active');
+            });
+            
+            // Language options
+            languageOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    const lang = option.getAttribute('data-lang');
+                    state.currentLanguage = lang;
+                    applyLanguage(lang);
+                    languageDropdown.classList.remove('active');
+                    showNotification(translateText('settingsUpdated'), translateText('languageChanged'));
+                });
+            });
+            
+            // Close language dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!languageBtn.contains(e.target) && !languageDropdown.contains(e.target)) {
+                    languageDropdown.classList.remove('active');
+                }
+            });
+            
+            // Submit complaint
+            submitComplaintBtn.addEventListener('click', handleComplaintSubmit);
+            
+            // Theme buttons
+            themeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const theme = btn.getAttribute('data-theme');
+                    changeTheme(theme);
+                    themeBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+            
+            // Settings changes
+            historyDuration.addEventListener('change', updateHistoryDuration);
+            notificationsToggle.addEventListener('change', updateNotifications);
+            soundToggle.addEventListener('change', updateSound);
+            
+            // Modal buttons
+            modalCancel.addEventListener('click', hideModal);
+            modalConfirm.addEventListener('click', confirmAction);
+            
+            // Notification button
+            notificationBtn.addEventListener('click', showLatestNotification);
+            
+            // Filter and search events
+            historyFilter.addEventListener('change', renderHistory);
+            historyTypeFilter.addEventListener('change', renderHistory);
+            historySort.addEventListener('change', renderHistory);
+            historySearch.addEventListener('input', debounce(renderHistory, 300));
+            
+            // Notification click to close
+            notification.addEventListener('click', hideNotification);
+        }
+
+        // Compress image to be under `maxSize` bytes (default 2MB)
+        async function compressImage(file, maxSize = 2 * 1024 * 1024) {
+            if (!file || !file.type.startsWith('image/')) return null;
+
+            // Load image into an offscreen Image
+            const dataUrl = await new Promise((res, rej) => {
+                const fr = new FileReader();
+                fr.onload = () => res(fr.result);
+                fr.onerror = rej;
+                fr.readAsDataURL(file);
+            });
+
+            const img = await new Promise((res, rej) => {
+                const i = new Image();
+                i.onload = () => res(i);
+                i.onerror = rej;
+                i.src = dataUrl;
+            });
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Start with original dimensions
+            let [w, h] = [img.width, img.height];
+            canvas.width = w;
+            canvas.height = h;
+            ctx.drawImage(img, 0, 0, w, h);
+
+            // Try reducing quality first, then dimensions iteratively
+            let quality = 0.92;
+            let blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+
+            // If already under size and is jpeg/blob exists, return
+            if (blob && blob.size <= maxSize) {
+                return new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' });
+            }
+
+            // Reduce quality progressively
+            const qualities = [0.85, 0.7, 0.55, 0.4, 0.25];
+            for (const q of qualities) {
+                blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', q));
+                if (blob && blob.size <= maxSize) {
+                    return new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' });
+                }
+            }
+
+            // If quality reduction not enough, downscale dimensions and retry
+            let scale = 0.9;
+            while (scale > 0.2) {
+                const newW = Math.round(w * scale);
+                const newH = Math.round(h * scale);
+                canvas.width = newW;
+                canvas.height = newH;
+                ctx.clearRect(0, 0, newW, newH);
+                ctx.drawImage(img, 0, 0, newW, newH);
+
+                // try several qualities for this size
+                for (const q of [0.85, 0.7, 0.55, 0.4]) {
+                    blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', q));
+                    if (blob && blob.size <= maxSize) {
+                        return new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' });
+                    }
+                }
+
+                scale -= 0.15;
+            }
+
+            // Last attempt: very small quality
+            blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.2));
+            if (blob && blob.size <= maxSize) {
+                return new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' });
+            }
+
+            // Could not compress enough
+            return null;
+        }
+
+        // 处理照片输入 — now compress images to <=2MB before preview/upload
+        async function handlePhotoInput(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // 检查文件类型
+            if (!file.type.match('image.*')) {
+                showNotification(translateText('validationError'), 'Please select an image file');
+                event.target.value = '';
+                return;
+            }
+
+            // Attempt to compress (or convert) to <= 2MB
+            const compressed = await compressImage(file, 2 * 1024 * 1024);
+            if (!compressed) {
+                showNotification(translateText('error'), 'Unable to compress image below 2MB. Try a smaller image.');
+                event.target.value = '';
+                return;
+            }
+
+            state.photoFile = compressed;
+
+            // 预览压缩后的图片
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                photoPreview.classList.add('active');
+                state.selectedPhoto = e.target.result;
+            };
+            reader.readAsDataURL(compressed);
+
+            // 重置输入
+            event.target.value = '';
+        }
+
+        // 删除照片
+        function removePhoto() {
+            state.selectedPhoto = null;
+            state.photoFile = null;
+            previewImage.src = '';
+            photoPreview.classList.remove('active');
+        }
+
+        // 上传照片到Supabase
+        async function uploadPhotoToSupabase() {
+            if (!state.photoFile) {
+                return { success: true, url: null };
+            }
+            
+            try {
+                showNotification(translateText('photoUploading'), '...');
+                const result = await state.db.uploadPhoto(state.photoFile, state.currentUser.id);
+                
+                if (result.success) {
+                    showNotification(translateText('success'), translateText('photoUploaded'));
+                    return { success: true, url: result.url, fileName: result.fileName };
+                } else {
+                    showNotification(translateText('error'), translateText('photoUploadFailed'));
+                    return { success: false, error: result.error };
+                }
+            } catch (error) {
+                console.error('Upload photo error:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+        }
+
+        function navigateToPage(page) {
+            if (state.currentPage === page) return;
+            
+            menuItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-page') === page) {
+                    item.classList.add('active');
+                }
+            });
+            
+            pages.forEach(p => p.classList.remove('active'));
+            
+            const targetPage = document.getElementById(`${page}Page`);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                
+                const pageTitles = {
+                    dashboard: translateText('complaintDashboard'),
+                    placeComplaint: translateText('newComplaint'),
+                    history: translateText('complaintHistory'),
+                    settings: translateText('settings')
+                };
+                
+                const titleSpan = navbarTitle.querySelector('span[data-translate]');
+                if (titleSpan) {
+                    titleSpan.textContent = pageTitles[page] || translateText('complaintDashboard');
+                }
+                
+                state.currentPage = page;
+                
+                switch(page) {
+                    case 'dashboard':
+                        updateDashboard();
+                        break;
+                    case 'history':
+                        renderHistory();
+                        break;
+                }
+            }
+        }
+
+        function handleLogout() {
+            if (state.updateInterval) clearInterval(state.updateInterval);
+            if (state.notificationCheckInterval) clearInterval(state.notificationCheckInterval);
+            state.db.stopRealtime();
+            
+            localStorage.removeItem('current_session');
+            localStorage.removeItem('auth_token');
+            
+            showNotification(translateText('loggedOut'), translateText('loggedOut'));
+            
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+
+        function validateComplaintForm() {
+            if (!complaintName.value.trim()) {
+                showNotification(translateText('validationError'), translateText('pleaseEnterName'));
+                return false;
+            }
+            
+            if (!floorNumber.value || floorNumber.value < 1) {
+                showNotification(translateText('validationError'), translateText('pleaseEnterFloor'));
+                return false;
+            }
+            
+            if (!roomNumber.value || roomNumber.value < 1) {
+                showNotification(translateText('validationError'), translateText('pleaseEnterRoom'));
+                return false;
+            }
+            
+            const selectedType = document.querySelector('.type-btn.active');
+            if (!selectedType) {
+                showNotification(translateText('validationError'), translateText('pleaseSelectType'));
+                return false;
+            }
+            
+            if (!complaintDetails.value.trim()) {
+                showNotification(translateText('validationError'), translateText('pleaseDescribe'));
+                return false;
+            }
+            
+            return true;
+        }
+
+        async function handleComplaintSubmit() {
+            if (!validateComplaintForm()) return;
+            
+            showConfirmation(translateText('confirmAction'), async () => {
+                await submitComplaint();
+            });
+        }
+
+        async function submitComplaint() {
+            const originalText = submitComplaintBtn.innerHTML;
+            submitComplaintBtn.innerHTML = '<div class="loading"></div> ' + translateText('submitComplaint');
+            submitComplaintBtn.disabled = true;
+            
+            const type = document.querySelector('.type-btn.active').getAttribute('data-type');
+            const priority = document.querySelector('.priority-btn.active').getAttribute('data-priority');
+            
+            // 上传照片（如果有）
+            let photoUrl = null;
+            let photoFileName = null;
+            if (state.photoFile) {
+                const uploadResult = await uploadPhotoToSupabase();
+                if (!uploadResult.success) {
+                    submitComplaintBtn.innerHTML = originalText;
+                    submitComplaintBtn.disabled = false;
+                    return;
+                }
+                photoUrl = uploadResult.url;
+                photoFileName = uploadResult.fileName;
+            }
+            
+            const complaint = {
+                user_id: state.currentUser.id,
+                user_name: complaintName.value.trim(),
+                floor: parseInt(floorNumber.value),
+                room: parseInt(roomNumber.value),
+                type: type,
+                priority: priority,
+                description: complaintDetails.value.trim(),
+                photo_url: photoUrl,
+                photo_file_name: photoFileName
+            };
+            
+            const result = await state.db.addComplaint(complaint);
+            
+            submitComplaintBtn.innerHTML = originalText;
+            submitComplaintBtn.disabled = false;
+            
+            if (result.success) {
+                // 重置表单
+                floorNumber.value = '';
+                roomNumber.value = '';
+                complaintDetails.value = '';
+                removePhoto();
+                
+                showNotification(translateText('success'), translateText('complaintSubmitted'));
+                
+                updateDashboard();
+                
+                navigateToPage('dashboard');
+            } else {
+                showNotification(translateText('error'), translateText('failedSubmit'));
+            }
+        }
+
+        async function updateDashboard() {
+            const result = await state.db.getUserComplaints(state.currentUser.id);
+            
+            if (result.success) {
+                const complaints = result.data || [];
+                
+                const pending = complaints.filter(c => c.status === 'pending').length;
+                const inProgress = complaints.filter(c => c.status === 'inprogress').length;
+                const resolved = complaints.filter(c => c.status === 'resolved').length;
+                
+                animateCounter(pendingCount, pending);
+                animateCounter(inProgressCount, inProgress);
+                animateCounter(resolvedCount, resolved);
+                
+                const recentComplaints = [...complaints].slice(0, 5);
+                renderComplaintList(dashboardComplaints, recentComplaints);
+            }
+        }
+
+        function animateCounter(element, target) {
+            const current = parseInt(element.textContent) || 0;
+            const duration = 300;
+            const steps = 30;
+            const increment = (target - current) / steps;
+            let currentStep = 0;
+            
+            const timer = setInterval(() => {
+                currentStep++;
+                const value = Math.round(current + (increment * currentStep));
+                element.textContent = value;
+                
+                if (currentStep >= steps) {
+                    clearInterval(timer);
+                    element.textContent = target;
+                }
+            }, duration / steps);
+        }
+
+        async function renderHistory() {
+            const filter = historyFilter.value;
+            const typeFilter = historyTypeFilter.value;
+            const sort = historySort.value;
+            const search = historySearch.value.toLowerCase();
+            
+            const result = await state.db.getUserComplaints(state.currentUser.id);
+            
+            if (result.success) {
+                let complaints = result.data || [];
+                
+                if (filter !== 'all') {
+                    complaints = complaints.filter(c => c.status === filter);
+                }
+                
+                if (typeFilter !== 'all') {
+                    complaints = complaints.filter(c => c.type === typeFilter);
+                }
+                
+                if (search) {
+                    complaints = complaints.filter(c => 
+                        c.description.toLowerCase().includes(search) ||
+                        c.type.toLowerCase().includes(search) ||
+                        c.priority.toLowerCase().includes(search)
+                    );
+                }
+                
+                if (sort === 'newest') {
+                    complaints.sort((a, b) => new Date(b.date) - new Date(a.date));
+                } else {
+                    complaints.sort((a, b) => new Date(a.date) - new Date(b.date));
+                }
+                
+                renderComplaintList(historyComplaints, complaints);
+            }
+        }
+
+        function renderComplaintList(container, complaints) {
+            container.innerHTML = '';
+            
+            if (complaints.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>${state.currentPage === 'dashboard' ? translateText('noComplaintsYet') : translateText('noComplaintsFound')}</h3>
+                        <p>${state.currentPage === 'dashboard' ? translateText('submitFirstComplaint') : translateText('tryAdjustingFilters')}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const fragment = document.createDocumentFragment();
+            
+            complaints.forEach(complaint => {
+                const element = createComplaintElement(complaint);
+                fragment.appendChild(element);
+            });
+            
+            container.appendChild(fragment);
+        }
+
+        function createComplaintElement(complaint) {
+            const element = document.createElement('div');
+            element.className = `complaint-item type-${complaint.type} priority-${complaint.priority}`;
+            
+            const date = new Date(complaint.date);
+            const formattedDate = date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            // 检查是否有照片
+            const photoSection = complaint.photo_url ? `
+                <div class="complaint-info-item">
+                    <i class="fas fa-camera"></i>
+                    <span>Photo attached</span>
+                </div>
+            ` : '';
+            
+            element.innerHTML = `
+                <div class="complaint-header">
+                    <div class="complaint-title">${complaint.description.substring(0, 80)}${complaint.description.length > 80 ? '...' : ''}</div>
+                    <div class="complaint-type type-${complaint.type}">${complaint.type.toUpperCase()}</div>
+                </div>
+                <div class="complaint-info">
+                    <div class="complaint-info-item">
+                        <i class="fas fa-building"></i>
+                        <span>Floor ${complaint.floor}, Room ${complaint.room}</span>
+                    </div>
+                    <div class="complaint-info-item">
+                        <i class="fas fa-user"></i>
+                        <span>${complaint.user_name}</span>
+                    </div>
+                    ${photoSection}
+                    <div class="complaint-info-item">
+                        <i class="fas fa-flag"></i>
+                        <span class="complaint-priority priority-${complaint.priority}">${complaint.priority.toUpperCase()}</span>
+                    </div>
+                </div>
+                <div class="complaint-desc">${complaint.description}</div>
+                <div class="complaint-footer">
+                    <div class="complaint-status status-${complaint.status}">${complaint.status.toUpperCase().replace('INPROGRESS', 'IN PROGRESS')}</div>
+                    <div class="complaint-date">
+                        <i class="fas fa-clock"></i>
+                        <span>${formattedDate}</span>
+                    </div>
+                </div>
+            `;
+            
+            return element;
+        }
+
+        function changeTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+            }
+            
+            localStorage.setItem('theme', theme);
+        }
+
+        function updateHistoryDuration() {
+            localStorage.setItem('historyDuration', historyDuration.value);
+            showNotification(translateText('settingsUpdated'), translateText('historyDurationSaved'));
+        }
+
+        function updateNotifications() {
+            state.notificationsEnabled = notificationsToggle.checked;
+            localStorage.setItem('notifications', notificationsToggle.checked);
+            showNotification(translateText('settingsUpdated'), state.notificationsEnabled ? translateText('notificationsEnabled') : translateText('notificationsDisabled'));
+        }
+
+        function updateSound() {
+            state.soundEnabled = soundToggle.checked;
+            localStorage.setItem('sound', soundToggle.checked);
+            showNotification(translateText('settingsUpdated'), state.soundEnabled ? translateText('soundEnabled') : translateText('soundDisabled'));
+        }
+
+        // Modal functions
+        let currentAction = null;
+
+        function showConfirmation(message, action) {
+            modalText.textContent = message;
+            currentAction = action;
+            confirmationModal.classList.add('active');
+        }
+
+        function hideModal() {
+            confirmationModal.classList.remove('active');
+            currentAction = null;
+        }
+
+        function confirmAction() {
+            confirmationModal.classList.remove('active');
+            if (currentAction) {
+                currentAction();
+                currentAction = null;
+            }
+        }
+
+        // Notification functions
+        let notificationTimeout = null;
+
+        function showNotification(title, message) {
+            if (!state.notificationsEnabled) return;
+            
+            hideNotification();
+            
+            notificationTitle.textContent = title;
+            notificationText.textContent = message;
+            
+            notification.classList.add('active');
+            
+            if (notificationTimeout) {
+                clearTimeout(notificationTimeout);
+            }
+            
+            notificationTimeout = setTimeout(() => {
+                hideNotification();
+            }, 5000);
+        }
+
+        function hideNotification() {
+            notification.classList.remove('active');
+            
+            if (notificationTimeout) {
+                clearTimeout(notificationTimeout);
+                notificationTimeout = null;
+            }
+        }
+
+        function showLatestNotification() {
+            showNotification(translateText('settingsUpdated'), translateText('notificationsEnabled'));
+        }
+
+        // Real-time updates
+        function initRealtimeUpdates() {
+            state.db.startRealtime(state.currentUser.id, (payload) => {
+                state.complaintCache.delete(state.currentUser.id);
+                localStorage.removeItem(`complaints_${state.currentUser.id}`);
+                
+                switch(state.currentPage) {
+                    case 'dashboard':
+                        updateDashboard();
+                        break;
+                    case 'history':
+                        renderHistory();
+                        break;
+                }
+                
+                if (payload.eventType === 'UPDATE' && payload.new.status !== payload.old.status) {
+                    const statusText = payload.new.status.toUpperCase().replace('INPROGRESS', 'IN PROGRESS');
+                    showNotification('Status Updated', `Your complaint status changed to ${statusText}`);
+                }
+                
+                state.lastUpdate = Date.now();
+            });
+            
+            state.realtimeConnected = true;
+        }
+
+        function startUpdateInterval() {
+            state.updateInterval = setInterval(() => {
+                if (state.currentPage === 'dashboard') {
+                    updateDashboard();
+                }
+            }, 10000);
+        }
+
+        // Utility functions
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>

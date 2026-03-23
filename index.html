@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Complaints Management - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --user-color: #3498db;
+            --admin-color: #9b59b6;
+            --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+            --border-radius: 8px;
+        }
+
+        body {
+            background-color: #2c3e50; /* medium dark background */
+            color: #ecf0f1;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .logo-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+            margin-bottom: 5px;
+        }
+
+        .logo-img {
+            width: 260px; /* increased size */
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 10px;
+        }
+        .tagline {
+            color: #7f8c8d;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .login-box {
+            background-color: white;
+            color: #333;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+            transition: var(--transition);
+            border: 1px solid #eef2f7;
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .login-role-selector {
+            display: flex;
+            margin-bottom: 25px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e8ecef;
+        }
+
+        .role-tab {
+            flex: 1;
+            text-align: center;
+            padding: 14px;
+            background-color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            color: #5d6d7e;
+            font-size: 15px;
+        }
+
+        .role-tab:first-child {
+            border-right: 1px solid #e8ecef;
+        }
+
+        .role-tab.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .role-tab.user-role.active {
+            background-color: var(--user-color);
+        }
+
+        .role-tab.admin-role.active {
+            background-color: var(--admin-color);
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #e0e6ed;
+            border-radius: var(--border-radius);
+            font-size: 15px;
+            transition: var(--transition);
+            background-color: #fcfdfe;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+            background-color: white;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .remember-me label {
+            margin-bottom: 0;
+            cursor: pointer;
+            font-size: 14px;
+            color: #5d6d7e;
+        }
+
+        .login-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+        }
+
+        .login-btn:hover {
+            background-color: #2980b9;
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            font-size: 14px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+            padding: 12px;
+            background-color: rgba(231, 76, 60, 0.08);
+            border-radius: var(--border-radius);
+            border-left: 3px solid var(--danger-color);
+        }
+
+        .admin-type-selector {
+            display: none;
+        }
+
+        .admin-type-selector.active {
+            display: block;
+        }
+
+        .admin-type-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #3498db;
+            font-weight: 500;
+        }
+
+        .admin-type-label i {
+            font-size: 16px;
+        }
+
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 30px 25px;
+            }
+            
+            .login-title {
+                font-size: 22px;
+            }
+            
+            .logo {
+                font-size: 28px;
+            }
+            
+                .logo-img {
+                    width: 180px; /* responsive smaller size */
+                }
+        }
+
+        /* Input icons */
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #95a5a6;
+            font-size: 16px;
+        }
+
+        .input-with-icon input {
+            padding-left: 42px;
+        }
+    </style>
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-header">
+                <img src="logo.png" alt="Logo" class="logo-img">
+            </div>
+        
+        <div class="login-box">
+            <h1 class="login-title">Login</h1>
+            
+            <div class="login-role-selector">
+                <div class="role-tab user-role active" data-role="user">User Login</div>
+                <div class="role-tab admin-role" data-role="admin">Admin Login</div>
+            </div>
+            
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <div class="input-with-icon">
+                        <i class="input-icon fas fa-user"></i>
+                        <input type="text" id="username" name="username" required placeholder="Enter your username">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-with-icon">
+                        <i class="input-icon fas fa-lock"></i>
+                        <input type="password" id="password" name="password" required placeholder="Enter your password">
+                    </div>
+                </div>
+                
+                <!-- Admin Type Selection (Only shows when admin role is selected) -->
+                <div class="form-group admin-type-selector" id="adminTypeSelector">
+                    <label for="adminType" class="admin-type-label">
+                        <i class="fas fa-tools"></i>
+                        Select your department
+                    </label>
+                    <select id="adminType" name="adminType">
+                        <option value="">Select department</option>
+                        <option value="IT">IT Department</option>
+                        <option value="electrician">Electrician</option>
+                        <option value="plumber">Plumber</option>
+                        <option value="carpenter">Carpenter</option>
+                        <option value="cleaner">Cleaner</option>
+                        <option value="general">General Maintenance</option>
+                        <option value="security">Security</option>
+                        <option value="gardener">Gardener</option>
+                        <option value="painter">Painter</option>
+                    </select>
+                </div>
+                
+                <div class="remember-me">
+                    <input type="checkbox" id="stayLoggedIn" name="stayLoggedIn">
+                    <label for="stayLoggedIn">Stay logged in</label>
+                </div>
+                
+                <button type="submit" class="login-btn">Login</button>
+                
+                <div class="error-message" id="errorMessage">
+                    Invalid username or password
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Supabase Configuration - Removed duplicate declaration
+        const SUPABASE_URL = 'https://ykdukxfuyvucavcezftf.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_4ugDmOCauI0FLil-BPeh1g_3AhbHSzq';
+
+        // Initialize Supabase - Use a different variable name to avoid conflict
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // DOM Elements
+        const roleTabs = document.querySelectorAll('.role-tab');
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const adminTypeSelector = document.getElementById('adminTypeSelector');
+        const adminTypeSelect = document.getElementById('adminType');
+        const loginBtn = document.querySelector('.login-btn');
+        const stayLoggedInCheckbox = document.getElementById('stayLoggedIn');
+        
+        // Check for existing session on page load
+        function checkExistingSession() {
+            try {
+                const sessionData = localStorage.getItem('current_session');
+                const sessionExpires = localStorage.getItem('session_expires');
+                
+                if (sessionData && sessionExpires) {
+                    const expires = parseInt(sessionExpires);
+                    
+                    // Check if session is still valid
+                    if (Date.now() < expires) {
+                        const session = JSON.parse(sessionData);
+                        
+                        // Redirect based on role
+                        if (session.role === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else {
+                            window.location.href = 'user.html';
+                        }
+                        return true;
+                    } else {
+                        // Session expired, clear it
+                        clearSession();
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking session:', error);
+                clearSession();
+            }
+            return false;
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Role tabs
+            roleTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    roleTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    const isAdmin = tab.classList.contains('admin-role');
+                    
+                    // Update UI based on role
+                    if (isAdmin) {
+                        loginBtn.style.backgroundColor = '#9b59b6'; // admin color
+                        loginBtn.style.boxShadow = '0 4px 12px rgba(155, 89, 182, 0.2)';
+                        adminTypeSelector.classList.add('active');
+                        adminTypeSelect.setAttribute('required', 'required');
+                    } else {
+                        loginBtn.style.backgroundColor = '#3498db'; // user color
+                        loginBtn.style.boxShadow = '0 4px 12px rgba(52, 152, 219, 0.2)';
+                        adminTypeSelector.classList.remove('active');
+                        adminTypeSelect.removeAttribute('required');
+                    }
+                });
+            });
+            
+            // Login form
+            loginForm.addEventListener('submit', handleLogin);
+            
+            // Load admin types from database on admin tab click
+            document.querySelector('.admin-role').addEventListener('click', loadAdminTypes);
+        }
+        
+        async function loadAdminTypes() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('admins')
+                    .select('admin_type')
+                    .not('admin_type', 'is', null);
+                
+                if (error) throw error;
+                
+                // Get unique admin types
+                const uniqueTypes = [...new Set(data.map(item => item.admin_type))].filter(Boolean);
+                
+                // Clear existing options except first
+                while (adminTypeSelect.options.length > 1) {
+                    adminTypeSelect.remove(1);
+                }
+                
+                // Add admin types from database
+                uniqueTypes.forEach(type => {
+                    const option = document.createElement('option');
+                    option.value = type;
+                    option.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+                    adminTypeSelect.appendChild(option);
+                });
+                
+            } catch (error) {
+                console.error('Error loading admin types:', error);
+            }
+        }
+        
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const stayLoggedIn = stayLoggedInCheckbox.checked;
+            const isAdminTab = document.querySelector('.role-tab.admin-role').classList.contains('active');
+            
+            // Clear previous errors
+            errorMessage.style.display = 'none';
+            
+            // Basic validation
+            if (!username || !password) {
+                showError('Please fill in all required fields');
+                return;
+            }
+            
+            try {
+                if (isAdminTab) {
+                    // Get selected admin type
+                    const adminType = adminTypeSelect.value;
+                    if (!adminType) {
+                        showError('Please select your department');
+                        return;
+                    }
+                    
+                    const { data: admin, error } = await supabaseClient
+                        .from('admins')
+                        .select('*')
+                        .eq('username', username)
+                        .eq('password', password)
+                        .eq('admin_type', adminType)
+                        .single();
+
+                    if (error || !admin) {
+                        showError(`Invalid credentials for ${adminType} department`);
+                        return;
+                    }
+                    
+                    // Calculate session expiry
+                    const sessionDuration = stayLoggedIn ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000; // 30 days or 1 day
+                    const expires = Date.now() + sessionDuration;
+                    
+                    // Create session with admin_type
+                    const sessionData = {
+                        id: admin.id,
+                        name: admin.name,
+                        username: admin.username,
+                        role: 'admin',
+                        admin_type: admin.admin_type,
+                        admin_level: admin.admin_level,
+                        isAdmin: true,
+                        expires: expires
+                    };
+                    
+                    localStorage.setItem('current_session', JSON.stringify(sessionData));
+                    localStorage.setItem('session_expires', expires.toString());
+                    localStorage.setItem('stay_logged_in', stayLoggedIn.toString());
+                    
+                    // Update last login
+                    await supabaseClient
+                        .from('admins')
+                        .update({ last_login: new Date().toISOString() })
+                        .eq('id', admin.id);
+                    
+                    // Redirect to admin page
+                    window.location.href = 'admin.html';
+                    
+                } else {
+                    // User login
+                    const { data: user, error } = await supabaseClient
+                        .from('users')
+                        .select('*')
+                        .eq('username', username)
+                        .eq('password', password)
+                        .single();
+
+                    if (error || !user) {
+                        showError('Invalid user credentials');
+                        return;
+                    }
+                    
+                    // Calculate session expiry
+                    const sessionDuration = stayLoggedIn ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000; // 30 days or 1 day
+                    const expires = Date.now() + sessionDuration;
+                    
+                    const sessionData = {
+                        id: user.id,
+                        name: user.name,
+                        username: user.username,
+                        role: 'user',
+                        isAdmin: false,
+                        expires: expires
+                    };
+                    
+                    localStorage.setItem('current_session', JSON.stringify(sessionData));
+                    localStorage.setItem('session_expires', expires.toString());
+                    localStorage.setItem('stay_logged_in', stayLoggedIn.toString());
+                    
+                    window.location.href = 'user.html';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('Login failed. Please try again.');
+            }
+        }
+        
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Clear session data
+        function clearSession() {
+            localStorage.removeItem('current_session');
+            localStorage.removeItem('session_expires');
+            localStorage.removeItem('stay_logged_in');
+        }
+        
+        // Logout function to be used in other pages
+        function logout() {
+            clearSession();
+            window.location.href = 'index.html';
+        }
+        
+        // Make logout function globally available
+        window.logout = logout;
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check for existing valid session
+            if (!checkExistingSession()) {
+                setupEventListeners();
+            }
+        });
+    </script>
+</body>
+</html>
